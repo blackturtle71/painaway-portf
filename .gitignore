@@ -1,0 +1,16 @@
+# Node/Vite
+node_modules/
+dist/
+.env
+pain_away/static/frontend/
+
+# Python/Django
+__pycache__/
+migrations
+*.pyc
+*.sqlite3
+media/
+db.sqlite3
+venv/
+.venv
+
