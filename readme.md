@@ -6,12 +6,20 @@ Gotta switch to Postgresql, and probably try putting all that inside a docker co
 
 - python -m venv .venv
 - source .venv/bin/activate
-- gti clone the repo
-- pip intall -r requirements
-- python manage.py makemigrations
+- git clone the repo
+- pip install -r requirements
+- python manage.py makemigrations authenticataion
+- python manage.py makemigrations chat
+- python manage.py makemigrations diary
 - python manage.py migrate
 - python manage.py createsuperuser
 - python manage.py runserver
+
+# setup after updates
+
+If new app has been created than you must run these commands
+- python manage.py makemigrations {app_name}
+- python manage.py migrate
 
 # Auth App
 
