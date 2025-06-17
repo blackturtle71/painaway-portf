@@ -1,0 +1,83 @@
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { useFormik } from 'formik'
+import {
+  Container,
+  Row,
+  Col,
+} from 'react-bootstrap'
+
+import LoginCard from '../ui/LoginCard.jsx'
+import { persistAuth } from '../../slices/authSlice.js'
+import { useLoginUserMutation } from '../../services/api/authApi.js'
+import { loginSchema } from '../../validation/validationSchema.js'
+import routes from '../../routes.js'
+
+const LoginPage = () => {
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const inputRef = useRef()
+  const navigate = useNavigate()
+  const [loginUser] = useLoginUserMutation()
+  const [authFailed, setAuthFailed] = useState(false)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: loginSchema(t('errors.required')),
+    onSubmit: async (values) => {
+      setAuthFailed(false)
+
+      try {
+        const response = await loginUser(values).unwrap()
+        dispatch(persistAuth(response))
+        navigate(routes.chatPath()) // then change navigate to dairy
+      }
+      catch (err) {
+        formik.setSubmitting(false)
+        if (err.status === 401) {
+          setAuthFailed(true)
+          inputRef.current.select()
+        }
+        else {
+          toast.error(t('errors.network'))
+        }
+      }
+    },
+  })
+
+  const values = {
+    formik,
+    title: t('entry'),
+    buttonTitle: t('entry'),
+    placeholderName: t('placeholders.login'),
+    placeholderPassword: t('placeholders.password'),
+    noAccount: t('noAccount'),
+    registration: t('registration'),
+    error: t('errors.invalidFeedback'),
+    path: routes.registerPath(),
+    authFailed,
+    inputRef,
+  }
+
+  return (
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={8} lg={6}>
+          <LoginCard values={values} />
+        </Col>
+      </Row>
+    </Container>
+  )
+}
+
+export default LoginPage
