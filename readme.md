@@ -8,7 +8,7 @@ Gotta switch to Postgresql, and probably try putting all that inside a docker co
 - source .venv/bin/activate
 - git clone the repo
 - pip install -r requirements
-- python manage.py makemigrations authenticataion
+- python manage.py makemigrations authentication
 - python manage.py makemigrations chat
 - python manage.py makemigrations diary
 - python manage.py migrate
