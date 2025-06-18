@@ -5,7 +5,7 @@ lint:
 	npx eslint .
 
 start:
-	npm start
+	npm run dev
 
 build:
 	npm run build
