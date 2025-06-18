@@ -42,7 +42,7 @@ const RegisterCard = (props) => {
     placeholder: placeholderEmail,
     failed: (formik.errors.email && formik.touched.email) || registerFailed,
     emailOnBlur,
-    inputRef,
+    inputRef: null,
     error: formik.errors.email,
   }
 
