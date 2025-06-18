@@ -3,13 +3,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 from django.db import models
-from django.contrib.auth.models import AnonymousUser
 from rest_framework.authtoken.models import Token
 from .models import Message
-from django.shortcuts import get_object_or_404
 from authentication.models import CustomUser
 
-# is this the best consumer ever? fuck no, but it works, and I won't touch this piece of crap ever again
 class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
@@ -23,30 +20,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         token_key = self.scope['query_string'].decode().split('=')[1]
         self.user = await self.get_user_from_token(token_key)
-        self.peer_name = self.scope['url_route']['kwargs']['peer']
+        self.peer_id = self.scope['url_route']['kwargs']['peer_id']
         
-        self.peer = await self.get_user_by_username(self.peer_name)
+        self.peer = await self.get_user_by_id(self.peer_id)
         
-        if not self.user or not self.peer or self.peer  == self.user:
+        if not self.user or not self.peer or self.peer.id == self.user.id:
             self.room_group_name = 'disconnect'
             await self.close()
 
         try:
-            self.sender = self.user.username
-            usernames = sorted([self.sender, self.peer.username])
-            self.room_group_name = f'private_chat_{"_".join(usernames)}'
+            self.sender = self.user.id  # Now using ID instead of username
+            user_ids = sorted([str(self.sender), str(self.peer.id)])
+            self.room_group_name = f'private_chat_{"_".join(user_ids)}'
             await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
             )
             await self.accept()
             await self.send_message_history()
-        except AttributeError: # if the peer doesn't exist self.peer.username throws this error
+        except AttributeError: # if the peer doesn't exist self.peer.id throws this error
             self.room_group_name = 'disconnect'
             await self.close()
             
-        
-
     async def disconnect(self, code):
         await self.channel_layer.group_discard(
             self.room_group_name,
@@ -67,14 +62,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         await self.save_message(self.user, self.peer, message)
 
-
     async def chat_message(self, event):
         message = event['message']
-        sender = event['sender']
+        sender_id = event['sender']
 
         await self.send(text_data=json.dumps({
             'message': message,
-            'sender': sender
+            'sender': sender_id
         }))
 
     async def send_message_history(self):
@@ -83,18 +77,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Send the message history to the WebSocket
         async for message in message_history:
-            #the dumbest fucking way to get this damn username
-            sender = await self.get_user_from_message(message)
             await self.send(text_data=json.dumps({
                 'message': message.content,
-                'sender': sender,
+                'sender': message.sender_id,
                 'timestamp': message.timestamp.isoformat(),
             }))
 
     @database_sync_to_async
-    def get_user_by_username(self, username):
+    def get_user_by_id(self, user_id):
         try:
-            return CustomUser.objects.get(username=username)
+            return CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return None
         
@@ -103,14 +95,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Message.objects.create(sender=sender, receiver=receiver, content=message)
     
     @database_sync_to_async
-    def get_message_history(self, user, other_user):
+    def get_message_history(self, user_id, other_user_id):
         # Retrieve the message history between the two users
         return Message.objects.filter(
-            (models.Q(sender=user) & models.Q(receiver=other_user)) |
-            (models.Q(sender=other_user) & models.Q(receiver=user))
+            (models.Q(sender=user_id) & models.Q(receiver=other_user_id)) |
+            (models.Q(sender=other_user_id) & models.Q(receiver=user_id))
         ).order_by('timestamp')
-    
-    #this is indeed senile
-    @sync_to_async
-    def get_user_from_message(self, message):
-        return message.sender.username

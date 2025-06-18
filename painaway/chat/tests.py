@@ -29,9 +29,9 @@ class ChatTests(APITestCase):
         self.token2 = Token.objects.create(user=self.user2)
 
         self.lobby_url = reverse('lobby-view')
-        self.convo_url = reverse('chat-view', kwargs={'peer_username': self.user2.username})
-        self.delete_convo_url = reverse('delete-history', kwargs={'peer_username': self.user2.username})
-        self.delete_convo_url_wrong_user = reverse('delete-history', kwargs={'peer_username': 'gibberish'})
+        self.convo_url = reverse('chat-view', kwargs={'peer_id': self.user2.id})
+        self.delete_convo_url = reverse('delete-history', kwargs={'peer_id': self.user2.id})
+        self.delete_convo_url_wrong_user = reverse('delete-history', kwargs={'peer_id': 9999})  # Non-existent ID
     
     def authenticate(self, user):
         if user == self.user1:
@@ -41,24 +41,24 @@ class ChatTests(APITestCase):
 
     async def test_websocket_connect_valid_token(self):
         communicator = WebsocketCommunicator(application,
-                                             f"ws/chat/{self.user2.username}/?token={self.token1.key}")
+                                             f"ws/chat/{self.user2.id}/?token={self.token1.key}")
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
         await communicator.disconnect()
 
     async def test_websocket_connect_invalid_token(self):
         communicator = WebsocketCommunicator(application,
-                                             f"ws/chat/{self.user2.username}/?token=gibberish")
+                                             f"ws/chat/{self.user2.id}/?token=gibberish")
         connected, _ = await communicator.connect()
         self.assertFalse(connected)
 
     async def test_websocket_message_exchange(self):
         communicator1 = WebsocketCommunicator(application,
-                                             f"ws/chat/{self.user2.username}/?token={self.token1.key}")
+                                             f"ws/chat/{self.user2.id}/?token={self.token1.key}")
         await communicator1.connect()
 
         communicator2 = WebsocketCommunicator(application,
-                                             f"ws/chat/{self.user1.username}/?token={self.token2.key}")
+                                             f"ws/chat/{self.user1.id}/?token={self.token2.key}")
         await communicator2.connect()
 
         await communicator1.send_json_to({"message": "sup"})
@@ -66,8 +66,7 @@ class ChatTests(APITestCase):
         response = await communicator2.receive_json_from()
 
         self.assertEqual(response["message"], "sup")
-        self.assertEqual(response['sender'], self.user1.username)
-
+        self.assertEqual(response['sender'], self.user1.id)  # Now checking ID instead of username
 
         await communicator1.disconnect()
         await communicator2.disconnect()
@@ -84,7 +83,7 @@ class ChatTests(APITestCase):
         self.authenticate(user=self.user1)
 
         response = self.client.delete(self.delete_convo_url_wrong_user)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 404)
 
     def test_lobby(self):
         Message.objects.create(sender=self.user1, receiver=self.user2, content='sup')
@@ -92,17 +91,21 @@ class ChatTests(APITestCase):
         self.authenticate(user=self.user1)
         response = self.client.get(self.lobby_url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['unique_peers'], ['user2'])
+        # Updated to match new response format
+        self.assertEqual(response.json()['peers'], [{
+            'id': self.user2.id,
+            'username': 'user2'
+        }])
 
     def test_lobby_user_search(self):
         self.authenticate(user=self.user1)
-        response = self.client.post(self.lobby_url, data={'peer_username': 'user2'})
+        response = self.client.post(self.lobby_url, data={'peer_id': self.user2.id})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['chat_url'], '/api/chat/conversations/user2/')
+        self.assertEqual(response.json()['chat_url'], f'/api/chat/conversations/{self.user2.id}/')
 
     def test_lobby_invalid_user_search(self):
         self.authenticate(user=self.user1)
-        response = self.client.post(self.lobby_url, data={'peer_username': ''})
+        response = self.client.post(self.lobby_url, data={'peer_id': ''})
         self.assertEqual(response.status_code, 400)
-        response = self.client.post(self.lobby_url, data={'peer_username': 'gibberish'})
+        response = self.client.post(self.lobby_url, data={'peer_id': 9999})  # Non-existent ID
         self.assertEqual(response.status_code, 400)
