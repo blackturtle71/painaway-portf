@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-2mf9a@t3h_n_e5036^pln)lsceeen)c+j_5fa(v#3u*bfvrded
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 
 # REST framework stuff
@@ -61,6 +64,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,6 +116,7 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# switch to Postgresql
 
 DATABASES = {
     'default': {
