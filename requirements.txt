@@ -16,10 +16,12 @@ constantly==23.10.4
 cookiecutter==2.6.0
 cryptography==43.0.1
 daphne==4.1.2
+dj-database-url==3.0.0
 Django==5.1.2
 django-cors-headers==4.7.0
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
+gunicorn==23.0.0
 hyperlink==21.0.0
 idna==3.10
 incremental==24.7.2
@@ -28,7 +30,9 @@ markdown-it-py==3.0.0
 MarkupSafe==3.0.1
 mdurl==0.1.2
 msgpack==1.1.0
+packaging==25.0
 pillow==11.0.0
+psycopg2-binary==2.9.10
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pycparser==2.22
