@@ -15,6 +15,11 @@ export default {
     haveAccount: 'Уже есть аккаунт?',
     registration: 'Регистрация',
     makeRegistration: 'Зарегистрироваться',
+    chats: {
+      dialogues: 'Диалоги',
+      addPatient: 'Добавить пациента',
+      deleteDialogue: 'Удалить диалог',    
+    },
     registrationRules: { // for easy version
       name: 'От 3 до 20 символов',
       email: 'Неверный адрес',
@@ -31,6 +36,7 @@ export default {
       serverError: 'Ошибка сервера',
       required: 'Обязательное поле',
       network: 'Ошибка соединения',
+      loadingError: 'Ошибка загрузки',
     },
   },
 }
