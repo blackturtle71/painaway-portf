@@ -27,7 +27,7 @@ export const restoreAuth = () => (dispatch) => {
 
 export const clearLocalStorage = () => (dispatch) => {
   localStorage.removeItem('token')
-  localStorage.removeItem('username')
+  localStorage.removeItem('user')
   dispatch(logOut())
 }
 
