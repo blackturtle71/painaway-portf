@@ -1,3 +1,5 @@
+import './styles'
+
 import ReactDOM from 'react-dom/client'
 import initApp from './main'
 
