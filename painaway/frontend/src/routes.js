@@ -1,8 +1,16 @@
-export const apiBase = 'http://localhost:8000'
+export const apiBase = '/api/'
 
-export default {
-  registerPath: () => '/register',
-  loginPath: () => '/login',
-  chatPath: () => '/chat',
-  checkUsername: () => '/check_username',
+export const apiRoutes = {
+  register: () => 'auth/register/',
+  login: () => 'auth/login/',
+  chats: () => '/chat/conversations/',
+  chatWith: id => `/chat/conversations/${id}/`,
+  deleteChatWith: peerId => `/chat/conversations/delete/${peerId}/`,
+}
+
+export const uiRoutes = {
+  home: () => '/',
+  login: () => '/login',
+  register: () => '/register',
+  chats: () => '/chat/conversations',
 }
