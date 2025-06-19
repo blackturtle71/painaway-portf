@@ -6,11 +6,12 @@ import {
 import { Button, Navbar, Nav, Container } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearLocalStorage } from '../slices/authSlice'
+import { uiRoutes } from '../routes'
 
 const AuthButton = () => {
   const dispatch = useDispatch()
   const location = useLocation()
-  const token = useSelector(state => state.auth.token)
+  const token = useSelector(state => state.authReducer.token)
 
   const handleLogOut = () => {
     dispatch(clearLocalStorage())
@@ -19,17 +20,17 @@ const AuthButton = () => {
   return (
     token
       ? <Button onClick={handleLogOut}>Выйти</Button>
-      : <Button as={Link} to="/login" state={{ from: location }}>Войти</Button>
+      : <Button as={Link} to={uiRoutes.login()} state={{ from: location }}>Войти</Button>
   )
 }
 
 const RegisterButton = () => {
-  const token = useSelector(state => state.auth.token)
+  const token = useSelector(state => state.authReducer.token)
 
   if (token) return null
 
   return (
-    <Button as={Link} to="/register" variant="outline-primary" className="bi bi-person">Регистрация</Button>
+    <Button as={Link} to={uiRoutes.register()} variant="outline-primary" className="bi bi-person">Регистрация</Button>
   )
 }
 

@@ -11,10 +11,10 @@ import RegisterPage from './pages/RegisterPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ChatPage from './pages/ChatPage.jsx'
 import NotFound from './pages/NotFound.jsx'
-import routes from '../routes.js'
+import { uiRoutes } from '../routes.js'
 
 const PrivateRoute = ({ children }) => {
-  const token = useSelector(state => state.auth.token)
+  const token = useSelector(state => state.authReducer.token)
 
   return token ? children : <Navigate to="/login" replace />
 }
@@ -24,17 +24,17 @@ const App = () => (
     <div className="d-flex flex-column h-100">
       <Header />
       <Routes>
-        <Route path="/" element={<Navigate to={routes.chatPath()} replace />} />
+        <Route path={uiRoutes.home()} element={<Navigate to={uiRoutes.chats()} replace />} />
         <Route
-          path={routes.chatPath()}
+          path={uiRoutes.chats()}
           element={(
             <PrivateRoute>
               <ChatPage />
             </PrivateRoute>
           )}
         />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path={uiRoutes.register()} element={<RegisterPage />} />
+        <Route path={uiRoutes.login()} element={<LoginPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

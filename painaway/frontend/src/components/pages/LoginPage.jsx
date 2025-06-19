@@ -14,7 +14,7 @@ import LoginCard from '../ui/LoginCard.jsx'
 import { persistAuth } from '../../slices/authSlice.js'
 import { useLoginUserMutation } from '../../services/api/authApi.js'
 import { loginSchema } from '../../validation/validationSchema.js'
-import routes from '../../routes.js'
+import { uiRoutes } from '../../routes.js'
 
 const LoginPage = () => {
   const { t } = useTranslation()
@@ -40,11 +40,11 @@ const LoginPage = () => {
       try {
         const response = await loginUser(values).unwrap()
         dispatch(persistAuth(response))
-        navigate(routes.chatPath()) // then change navigate to dairy
+        navigate(uiRoutes.chats()) // then change navigate to dairy
       }
       catch (err) {
         formik.setSubmitting(false)
-        if (err.status === 401) {
+        if (err.status === 400) {
           setAuthFailed(true)
           inputRef.current.select()
         }
@@ -64,7 +64,7 @@ const LoginPage = () => {
     noAccount: t('noAccount'),
     registration: t('registration'),
     error: t('errors.invalidFeedback'),
-    path: routes.registerPath(),
+    path: uiRoutes.register(),
     authFailed,
     inputRef,
   }

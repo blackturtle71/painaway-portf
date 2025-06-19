@@ -6,35 +6,20 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
 import RegisterCard from '../ui/RegisterCard.jsx'
-import { useCheckUsernameQuery, useSignupUserMutation } from '../../services/api/authApi.js'
+import { useSignupUserMutation } from '../../services/api/authApi.js'
 import { easySignUpSchema } from '../../validation/validationSchema.js'
-import routes from '../../routes.js'
+import { uiRoutes } from '../../routes.js'
 
 const RegisterPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const inputRef = useRef()
-  const [usernameToCheck, setUsernameToCheck] = useState(null)
-  const [emailToCheck, setEmailToCheck] = useState(null)
-  const { data: usernameExists } = useCheckUsernameQuery(
-    usernameToCheck,
-    { skip: !usernameToCheck },
-  )
   const [signupUser] = useSignupUserMutation()
   const [registerFailed, setRegisterFailed] = useState(false)
 
   useEffect(() => {
     inputRef.current.focus()
   }, [])
-
-  useEffect(() => {
-    if (usernameExists?.exists) {
-      formik.setFieldError('username', t('errors.userExists'))
-    }
-    else if (formik.errors.username === t('errors.userExists')) {
-      formik.setFieldError('username', undefined) // remove error if login became unique
-    }
-  }, [usernameExists])
 
   const formik = useFormik({
     initialValues: {
@@ -47,8 +32,6 @@ const RegisterPage = () => {
     validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
-      setUsernameToCheck(null)
-
       try {
         await signupUser({
           username: values.username,
@@ -59,11 +42,11 @@ const RegisterPage = () => {
 
         toast.success(t('success.registration'))
         setRegisterFailed(false)
-        navigate(routes.loginPath())
+        navigate(uiRoutes.login())
       }
       catch (err) {
         console.log(err.data)
-        if (err.response && err.response.status === 400) {
+        if (err.response.username && err.response.status === 400) {
           toast.error(t('errors.userExists'))
           setRegisterFailed(true)
         }
@@ -77,29 +60,6 @@ const RegisterPage = () => {
     },
   })
 
-  // Обработка blur для поля логина
-  const handleUsernameBlur = async (e) => {
-    formik.handleBlur(e) // стандартный обработчик Formik
-
-    const username = e.target.value.trim()
-    await formik.validateField('username')
-
-    if (username && !formik.errors.username) {
-      setUsernameToCheck(username)
-    }
-  }
-
-  const handleEmailBlur = async (e) => {
-    formik.handleBlur(e) // стандартный обработчик Formik
-
-    const email = e.target.value.trim()
-    await formik.validateField('email')
-
-    if (email && !formik.errors.username) {
-      setEmailToCheck(email)
-    }
-  }
-
   const values = {
     formik,
     title: t('registration'),
@@ -111,10 +71,10 @@ const RegisterPage = () => {
     userExists: t('errors.userExists'),
     haveAccount: t('haveAccount'),
     login: t('entry'),
-    path: routes.loginPath(),
+    path: uiRoutes.login(),
     registerFailed,
-    usernameOnBlur: handleUsernameBlur,
-    emailOnBlur: handleEmailBlur,
+    // usernameOnBlur: handleUsernameBlur,
+    // emailOnBlur: handleEmailBlur,
     inputRef,
   }
 
