@@ -29,18 +29,10 @@ export const chatsApi = createApi({
       }),
       invalidatesTags: ['Chats'],
     }),
-    deleteChat: builder.mutation({
-      query: peerId => ({
-        url: apiRoutes.deleteChatWith(peerId),
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Chats', 'Messages'],
-    }),
   }),
 })
 
 export const {
   useGetChatsQuery,
   useAddChatMutation,
-  useDeleteChatMutation,
 } = chatsApi
