@@ -7,5 +7,9 @@ export {
   chatsApi,
   useGetChatsQuery,
   useAddChatMutation,
-  useDeleteChatMutation,
 } from './chatsApi.js'
+export {
+  messagesApi,
+  useGetMessagesQuery,
+  useDeleteMessagesMutation,
+} from './messagesApi.js'
