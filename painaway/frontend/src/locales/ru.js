@@ -16,9 +16,11 @@ export default {
     registration: 'Регистрация',
     makeRegistration: 'Зарегистрироваться',
     chats: {
+      you: 'Вы',
       dialogues: 'Диалоги',
       addPatient: 'Добавить пациента',
-      deleteDialogue: 'Удалить диалог',    
+      deleteDialogue: 'Удалить диалог',
+      warning: 'Выберите или добавьте пациента для начала диалога',
     },
     registrationRules: { // for easy version
       name: 'От 3 до 20 символов',
