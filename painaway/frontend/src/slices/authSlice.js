@@ -1,25 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  username: null,
   token: null,
+  user: null,
 }
 
 export const persistAuth = credentials => (dispatch) => {
-  const { username, token } = credentials
+  const { user, token } = credentials
 
-  dispatch(setCredentials({ username, token }))
+  dispatch(setCredentials({ user, token }))
 
-  localStorage.setItem('username', JSON.stringify(username))
+  localStorage.setItem('user', JSON.stringify(user))
   localStorage.setItem('token', JSON.stringify(token))
 }
 
 export const restoreAuth = () => (dispatch) => {
   const token = localStorage.getItem('token')
-  const username = localStorage.getItem('username')
+  const user = localStorage.getItem('user')
 
-  if (username && token) {
-    dispatch(setCredentials({ username, token }))
+  if (user && token) {
+    dispatch(setCredentials({ user, token }))
   }
 
   return token
@@ -36,12 +36,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { username = null, token } = action.payload
-      state.username = username
+      const { user = null, token } = action.payload
+      state.user = user
       state.token = token
     },
     logOut: (state) => {
-      state.username = null
+      state.user = null
       state.token = null
     },
   },
