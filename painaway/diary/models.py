@@ -35,3 +35,21 @@ class BodyStats(models.Model):
     def __str__(self):
         return f"{self.body_part.name} - {self.pain_type} ({self.intensity}) for {self.owner}"
     
+class PatientDoctorLink(models.Model):
+    patient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='doc_links')
+    doctor = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='patient_links')
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected')
+    ]
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('patient', 'doctor')
+
+    def __str__(self):
+        return f"Link between patient {self.patient} and doctor {self.doctor} | [{self.status}]"
