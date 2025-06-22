@@ -68,10 +68,15 @@ The db is auto populated with BodyPart objects (they are named after the names o
 
 Routes:
 
-- notes/ - GET will send a list of notes the user has; POST will allow creating a note, just send {"title": "some title", "body": "some text"} (title is required); PATCH will allow to alter title and body of the note (specified by pk, so you must send {"note_pk":\<int:pk>, \<title or body or both>}; DELETE will delete the note by pk {"note_pk": \<int:pk>}
+- notes/ - ~~GET will send a list of notes the user has; POST will allow creating a note, just send {"title": "some title", "body": "some text"} (title is required); PATCH will allow to alter title and body of the note (specified by pk, so you must send {"note_pk":\<int:pk>, \<title or body or both>}; DELETE will delete the note by pk {"note_pk": \<int:pk>}~~ REMOVED
+- link_doc/ - POST, available only for Patient group. You send {'doc_username': \<str:username>} and it will send a request for linking to the specified doctor. Status will be auto set to "pending"; DELETE, you send {'doc_username': \<str:username>} and the request for this doc gets deleted (handy if the link was rejected, user just deletes it)
+- doc_respond/ - POST, available only for Doctor group. You send {'patient_id': \<int:user.id>, 'action':\<'accept' or 'reject'>}. Accept or reject the linking proccess (note that the link exists anyway, but based on its status the doc can see patient's data)
+- list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/)
 - bodyparts/ - GET will send you all the BodyPart objects in the db (must be 44), you need it to extract pks
-- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "description": "fell on my scissors"} (first three fields are required, "description" is not), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}
+- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "description": "fell on my scissors"} (first three fields are required, "description" is not), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient
 
-# TODO:
-- Add digest 
-- Add relations (and restrictions) between Patient and Doctor groups
+# TODO Backend:
+- ~~Add relations (and restrictions) between Patient and Doctor groups~~
+- Add doc page
+- Add timeout (with autodeletion) for rejected links?
+- Deal with notifications
