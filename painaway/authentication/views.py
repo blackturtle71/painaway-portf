@@ -49,4 +49,18 @@ class UserProfileView(APIView):
 
     def get(self, request):
         serialzier = UserSerializer(request.user)
-        return Response(serialzier.data)
+        return Response(serialzier.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request):
+
+        if 'id' in request.data or 'groups' in request.data: # they are read-only anyway, but I want redundancy
+            return Response({"error": "Non editable field present"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serialzier = UserSerializer(request.user, data=request.data, partial=True)
+
+        if not serialzier.is_valid():
+            return Response(serialzier.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        serialzier.save()
+        return Response(serialzier.data, status=status.HTTP_200_OK)
+

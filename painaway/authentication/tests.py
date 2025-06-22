@@ -149,3 +149,22 @@ class AuthenticationTests(APITestCase):
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('email', response.data)
+    
+    def test_profile_update(self):
+        self.authenticate()
+        data = {
+            'phone_number': "654654",
+            'username': "wassupuser"
+        }
+        response = self.client.patch(self.profile_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual("wassupuser", response.data['username'])
+        self.assertEqual("654654", response.data['phone_number'])
+
+    def test_profile_update_noneditable_field(self):
+        self.authenticate()
+        data = {
+            "id": 400
+        }
+        response = self.client.patch(self.profile_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
