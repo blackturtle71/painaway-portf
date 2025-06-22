@@ -34,12 +34,19 @@ class AuthenticationTests(APITestCase):
         data = {
             'username': 'newuser',
             'email': 'new@example.com',
-            'password': 'newpass123'
+            'password': 'newpass123',
+            "first_name": "Mike",
+            "last_name": "Wazowski",
+            "father_name": "Sarkesian",
+            "phone_number": "+777777787",
+            "sex": "M",
+            "date_of_birth": "2000-7-1"
         }
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('token', response.data)
         self.assertIn('user', response.data)
+        self.assertEqual("M", response.data['user']['sex'])
         
         # Verify user was created
         self.assertTrue(User.objects.filter(username='newuser').exists())
@@ -49,11 +56,42 @@ class AuthenticationTests(APITestCase):
         data = {
             'username': 'testuser',  # Already exists
             'email': 'new@example.com',
-            'password': 'newpass123'
+            'password': 'newpass123',
+            'phone': '465478876'
         }
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('username', response.data)
+
+    def test_wrong_bday_registration(self):
+        data = {
+            'username': 'newuser',
+            'email': 'new@example.com',
+            'password': 'newpass123',
+            "first_name": "Mike",
+            "last_name": "Wazowski",
+            "father_name": "Sarkesian",
+            "phone_number": "+777777787",
+            "sex": "F",
+            "date_of_birth": "2030-1-1"
+        }
+        response = self.client.post(self.register_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_wrong_sex_registration(self):
+        data = {
+            'username': 'newuser',
+            'email': 'new@example.com',
+            'password': 'newpass123',
+            "first_name": "Mike",
+            "last_name": "Wazowski",
+            "father_name": "Sarkesian",
+            "phone_number": "+777777787",
+            "sex": "G",
+            "date_of_birth": "2000-7-1"
+        }
+        response = self.client.post(self.register_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_successful_login(self):
         """Test valid credentials login"""
@@ -111,3 +149,22 @@ class AuthenticationTests(APITestCase):
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('email', response.data)
+    
+    def test_profile_update(self):
+        self.authenticate()
+        data = {
+            'phone_number': "654654",
+            'username': "wassupuser"
+        }
+        response = self.client.patch(self.profile_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual("wassupuser", response.data['username'])
+        self.assertEqual("654654", response.data['phone_number'])
+
+    def test_profile_update_noneditable_field(self):
+        self.authenticate()
+        data = {
+            "id": 400
+        }
+        response = self.client.patch(self.profile_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -1,19 +1,7 @@
 from rest_framework import serializers
-from .models import Note, BodyStats, BodyPart
+from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis
 from authentication.serializers import UserSerializer
 from datetime import datetime
-
-class NoteSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Note
-        fields = '__all__'
-        read_only_fields = ['owner', 'created_on']
-
-    def update(self, instance, validated_data):
-        instance.last_modified = datetime.now() # auto update timestamp
-        return super().update(instance, validated_data)
 
 class BodyPartSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,3 +35,21 @@ class BodyStatsSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.last_modified = datetime.now() # auto update timestamp
         return super().update(instance, validated_data)
+
+class PatientDoctorLinkSerializer(serializers.ModelSerializer):
+    patient = UserSerializer()
+    doctor = UserSerializer()
+
+    class Meta:
+        model = PatientDoctorLink
+        fields = ['id', 'patient', 'doctor', 'status', 'created_at']
+
+class PrescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prescription
+        fields = '__all__'
+
+class DiagnosisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diagnosis
+        fields = '__all__'
