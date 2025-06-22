@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BodyStats, BodyPart, PatientDoctorLink
+from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis
 from authentication.serializers import UserSerializer
 from datetime import datetime
 
@@ -43,3 +43,13 @@ class PatientDoctorLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientDoctorLink
         fields = ['id', 'patient', 'doctor', 'status', 'created_at']
+
+class PrescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prescription
+        fields = '__all__'
+
+class DiagnosisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diagnosis
+        fields = '__all__'

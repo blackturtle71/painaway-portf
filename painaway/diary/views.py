@@ -2,8 +2,8 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
-from .models import BodyStats, BodyPart, PatientDoctorLink
-from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer
+from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis
+from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer, PrescriptionSerializer, DiagnosisSerializer
 from .permissions import IsPatientOrLinkedDoc, IsDoctor
 from authentication.models import CustomUser
 
@@ -126,3 +126,139 @@ class ListLinksView(APIView):
 
         serializer = PatientDoctorLinkSerializer(links, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class PrescriptionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PrescriptionSerializer
+
+    def get(self, request):
+        user = request.user
+        link_id = request.query_params.get("link_id")
+
+        try:
+            link = PatientDoctorLink.objects.get(Q(patient=user, id=link_id) | Q(doctor=user, id=link_id))
+            if link.status == 'accepted':
+                prescription = Prescription.objects.filter(link=link)
+                serializer = self.serializer_class(prescription, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "link not accepted"}, status=403)
+
+        except PatientDoctorLink.DoesNotExist:
+            return Response({"error": "link not found"}, status=404)
+        
+    def post(self, request):
+        user = request.user
+        link_id = request.query_params.get("link_id")
+
+        try:
+            link = PatientDoctorLink.objects.get(Q(doctor=user, id=link_id))
+            if link.status == 'accepted':
+                serializer = PrescriptionSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save(link=link)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=400)
+            else:
+                return Response({"error": "link not accepted"}, status=403)
+
+        except PatientDoctorLink.DoesNotExist:
+            return Response({"error": "link not found"}, status=404)
+        
+    def patch(self, request):
+        user = request.user
+        prescription_id = request.query_params.get("prescription_id")
+
+        try:
+            prescription = Prescription.objects.get(id=prescription_id)
+            if user == prescription.link.doctor:
+                serializer = PrescriptionSerializer(prescription, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=200)
+                return Response(serializer.errors, status=400)
+            return Response({"error": "Not authorized to edit this prescription."}, status=403)
+        except Prescription.DoesNotExist:
+            return Response({'error': 'prescription not found'}, status=404)
+    
+    def delete(self, request):
+        user = request.user
+        prescription_id = request.query_params.get("prescription_id")
+
+        try:
+            prescription = Prescription.objects.get(id=prescription_id)
+            if user == prescription.link.doctor:
+                prescription.delete()                
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"error": "Not authorized to delete this prescription."}, status=403)
+        except Prescription.DoesNotExist:
+            return Response({'error': 'prescription not found'}, status=404)
+
+class DiagnosisView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = DiagnosisSerializer
+
+    def get(self, request):
+        user = request.user
+        link_id = request.query_params.get("link_id")
+
+        try:
+            link = PatientDoctorLink.objects.get(Q(patient=user, id=link_id) | Q(doctor=user, id=link_id))
+            if link.status == 'accepted':
+                diagnosis = Diagnosis.objects.filter(link=link)
+                serializer = self.serializer_class(diagnosis, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "link not accepted"}, status=403)
+
+        except PatientDoctorLink.DoesNotExist:
+            return Response({"error": "link not found"}, status=404)
+        
+    def post(self, request):
+        user = request.user
+        link_id = request.query_params.get("link_id")
+
+        try:
+            link = PatientDoctorLink.objects.get(Q(doctor=user, id=link_id))
+            if link.status == 'accepted':
+                serializer = DiagnosisSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save(link=link)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=400)
+            else:
+                return Response({"error": "link not accepted"}, status=403)
+
+        except PatientDoctorLink.DoesNotExist:
+            return Response({"error": "link not found"}, status=404)
+        
+    def patch(self, request):
+        user = request.user
+        diagnosis_id = request.query_params.get("diagnosis_id")
+
+        try:
+            diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+            if user == diagnosis.link.doctor:
+                serializer = DiagnosisSerializer(diagnosis, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=200)
+                return Response(serializer.errors, status=400)
+            return Response({"error": "Not authorized to edit this diagnosis."}, status=403)
+        except Diagnosis.DoesNotExist:
+            return Response({'error': 'diagnosis not found'}, status=404)
+    
+    def delete(self, request):
+        user = request.user
+        diagnosis_id = request.query_params.get("diagnosis_id")
+
+        try:
+            diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+            if user == diagnosis.link.doctor:
+                diagnosis.delete()                
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"error": "Not authorized to delete this diagnosis."}, status=403)
+        except Diagnosis.DoesNotExist:
+            return Response({'error': 'diagnosis not found'}, status=404)
+
+        

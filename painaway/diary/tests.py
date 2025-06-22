@@ -17,11 +17,29 @@ class BaseAPITestCase(APITestCase):
         self.doc = CustomUser.objects.create_user(username='doc', password='testpass', email='d@g.com', phone_number='32231321')
         self.doc_token = Token.objects.create(user=self.doc)
         self.doc.groups.set([Group.objects.get(name='Doctor')])
+        self.doc_id = self.doc.id
     
     def auth_doc(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.doc_token.key)
 
-class LinkTest(BaseAPITestCase):
+    def auth_patient(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+    
+    def create_link(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        self.client.post(url, data)
+
+        self.auth_doc()
+        url = reverse('doc-respond')
+        data = {'patient_id': self.patient_id, 'action': 'accept'}
+        self.client.post(url, data)
+
+        response = self.client.get(reverse('list-links'))
+        link_id = response.data[0]['id']
+        return link_id
+
+class LinkTests(BaseAPITestCase):
     def test_send_request_to_doc(self):
         url = reverse('link-doc')
         data = {'doc_username': "doc"}
@@ -115,7 +133,126 @@ class LinkTest(BaseAPITestCase):
         response = self.client.get(reverse('list-links'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]['status'], 'accepted')
+
+class PrescriptionTests(BaseAPITestCase):
+    def test_get_prescription(self):
+        link_id = self.create_link()
+
+        response = self.client.get(reverse('prescription-view') + f"?link_id={link_id}")
+        self.assertEqual(response.status_code, 200)
         
+    def test_get_wrong_prescription(self):
+        response = self.client.get(reverse('prescription-view') + f"?link_id=404")
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['prescription'], 'Anti-stubby')
+    
+    def test_add_wrong_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, 'details': 'Removes all the stub wounds'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_patient_prescription(self):
+        link_id = self.create_link()
+        self.auth_patient()
+        data = {"link": link_id,  "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 404)
+
+    def test_patch_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['prescription'], 'Anti-stubby')
+
+        prescription_id = response.data['id']
+        data = {"prescription": 'Ointment'}
+        response = self.client.patch(reverse('prescription-view') + f"?prescription_id={prescription_id}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['prescription'], 'Ointment')
+
+    def test_delete_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['prescription'], 'Anti-stubby')
+
+        prescription_id = response.data['id']
+        response = self.client.delete(reverse('prescription-view') + f"?prescription_id={prescription_id}")
+        self.assertEqual(response.status_code, 204)
+
+class DiagnosisTests(BaseAPITestCase):
+    def test_get_diagnosis(self):
+        link_id = self.create_link()
+
+        response = self.client.get(reverse('diagnosis-view') + f"?link_id={link_id}")
+        self.assertEqual(response.status_code, 200)
+        
+    def test_get_wrong_diagnosis(self):
+        response = self.client.get(reverse('diagnosis-view') + f"?link_id=404")
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_diagnosis(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['diagnosis'], 'DumbFuck')
+    
+    def test_add_wrong_diagnosis(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, 'details': 'Dumb as fuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_patient_diagnosis(self):
+        link_id = self.create_link()
+        self.auth_patient()
+        data = {"link": link_id,  "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 404)
+
+    def test_patch_diagnosis(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['diagnosis'], 'DumbFuck')
+
+        diagnosis_id = response.data['id']
+        data = {"diagnosis": 'Retarded'}
+        response = self.client.patch(reverse('diagnosis-view') + f"?diagnosis_id={diagnosis_id}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['diagnosis'], 'Retarded')
+
+    def test_delete_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'FumbDuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['diagnosis'], 'FumbDuck')
+
+        diagnosis_id = response.data['id']
+        response = self.client.delete(reverse('diagnosis-view') + f"?diagnosis_id={diagnosis_id}")
+        self.assertEqual(response.status_code, 204) 
+
+
 class BodyStatsViewTests(BaseAPITestCase):
 
     def setUp(self):

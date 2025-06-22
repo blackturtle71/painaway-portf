@@ -43,3 +43,19 @@ class PatientDoctorLink(models.Model):
 
     def __str__(self):
         return f"Link between patient {self.patient} and doctor {self.doctor} | [{self.status}]"
+    
+class Prescription(models.Model):
+    link = models.ForeignKey(PatientDoctorLink, on_delete=models.CASCADE, related_name='prescription_link')
+    prescription = models.CharField(max_length=50, null=False)
+    details = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.prescription} for patient {self.link.patient} from doctor {self.link.doctor}"
+
+class Diagnosis(models.Model):
+    link = models.ForeignKey(PatientDoctorLink, on_delete=models.CASCADE, related_name='diagnosis_link')
+    diagnosis = models.CharField(max_length=50, null=False)
+    details = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Patient {self.link.patient} has {self.diagnosis}; diagnosed by doctor {self.link.doctor}"
