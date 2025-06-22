@@ -5,7 +5,7 @@ export const apiRoutes = {
   login: () => 'auth/login/',
   chats: () => '/chat/conversations/',
   chatWith: id => `/chat/conversations/${id}/`,
-  deleteChatWith: peerId => `/chat/conversations/delete/${peerId}/`,
+  deleteMessagesWith: peerId => `/chat/conversations/delete/${peerId}/`,
 }
 
 export const uiRoutes = {
