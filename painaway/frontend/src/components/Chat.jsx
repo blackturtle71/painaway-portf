@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setActiveChat } from '../slices/chatsSlice'
 
 const Chat = ({ peer }) => {
-  const { t } = useTranslation
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const activeChatId = useSelector(state => state.chatsReducer.activeChatId)
   const isActive = peer.id === activeChatId
@@ -28,7 +28,7 @@ const Chat = ({ peer }) => {
           id={peer.id}
           variant={isActive ? 'secondary' : 'light'}
           className="w-100 rounded-0 text-start text-truncate btn"
-          onClick={() => handleClick(peer.id)}
+          onClick={handleClick}
         >
           {peer.username}
         </Button>
@@ -38,7 +38,7 @@ const Chat = ({ peer }) => {
           type="button"
           className=""
           aria-label={t('chats.deleteDialogue')}
-          onClick={() => handleDeleteDialogue(peer.id)}
+          onClick={handleDeleteDialogue}
         >
           <i className="bi bi-x-circle" />
         </Button>

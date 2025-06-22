@@ -6,7 +6,6 @@ import {
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useGetMessagesQuery } from '../services/api'
-import MessageForm from './MessageForm.jsx'
 
 const Messages = () => {
   const { t } = useTranslation()
@@ -57,8 +56,6 @@ const Messages = () => {
             )
           })}
         </div>
-
-        <MessageForm />
       </div>
     </Col>
   )
