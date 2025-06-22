@@ -33,10 +33,23 @@ API auto creates 2 groups: Patients and Doctors, a user will be auto assigned to
 
 Routes:
 
-- register/ - POST, obvs, password, username and email are required
+- register/ - POST, obvs, password, username, phone number and email are required
 - login/ - POST, obvs, username based
 - logout/ - POST, obvs, just send a token
-- profile/ - GET, returns user's username, email, etc.
+- profile/ - GET, returns user's username, email, etc.; PATCH, allows profile editing
+
+Example of the request to register/\
+{\
+    'username': 'newuser', #required, unique\
+    'email': 'new@example.com', #required, unique\
+    'password': 'newpass123', #required\
+    "first_name": "Mike",\
+    "last_name": "Wazowski",\
+    "father_name": "Sarkesian",\
+    "phone_number": "+777777787", #required, unique\
+    "sex": "M", #either M or F, other will throw 400\
+    "date_of_birth": "2000-7-1" # YYYY-MM-DD, set between 1900-1-1 and current date (will throw 400 on wrong date)\
+    }
 
 # Chat
 
