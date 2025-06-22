@@ -1,8 +1,9 @@
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.db.models import Q
 from .models import BodyStats, BodyPart, PatientDoctorLink
-from .serializers import BodyStatsSerializer, BodyPartSerializer
+from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer
 from .permissions import IsPatientOrLinkedDoc, IsDoctor
 from authentication.models import CustomUser
 
@@ -84,6 +85,15 @@ class SendDoctorRequestView(APIView):
             return Response({'detail': "Request sent"}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    def delete(self, request):
+        doc_username = request.data.get('doc_username')
+        try:
+            link = PatientDoctorLink.objects.get(patient=request.user, doctor__username=doc_username)
+            link.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except PatientDoctorLink.DoesNotExist:
+            return Response({'error': 'Request does not exists'}, status=status.HTTP_404_NOT_FOUND)
     
 class RespondToPatientRequestView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsDoctor]
@@ -92,7 +102,7 @@ class RespondToPatientRequestView(APIView):
         patient_id = request.data.get('patient_id')
         action = request.data.get('action') 
         try:
-            link = PatientDoctorLink.objects.get(patient_id=patient_id, doctor=request.user)
+            link = PatientDoctorLink.objects.get(patient__id=patient_id, doctor=request.user)
             if action == 'accept':
                 link.status = 'accepted'
             elif action == 'reject':
@@ -104,3 +114,15 @@ class RespondToPatientRequestView(APIView):
         except PatientDoctorLink.DoesNotExist:
             return Response({'error': 'Request not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+class ListLinksView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        links = PatientDoctorLink.objects.filter(
+            Q(patient=user) | Q(doctor=user)
+        ).select_related('patient', 'doctor')
+
+        serializer = PatientDoctorLinkSerializer(links, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -29,6 +29,20 @@ class LinkTest(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['detail'], "Request sent")
 
+    def test_delete_request(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        self.client.post(url, data)
+        response = self.client.delete(url, data)
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_wrong_request(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        self.client.post(url, data)
+        response = self.client.delete(url, {'doc_username': "doc2"})
+        self.assertEqual(response.status_code, 404)
+
     def test_send_request_to_patient(self):
         url = reverse('link-doc')
         data = {'doc_username': "testuser"}
@@ -73,6 +87,35 @@ class LinkTest(BaseAPITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 404)
 
+    def test_list_links_patient(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['detail'], "Request sent")
+
+        response = self.client.get(reverse('list-links'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]['status'], 'pending')
+
+    def test_list_links_doctor(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['detail'], "Request sent")
+
+        self.auth_doc()
+        url = reverse('doc-respond')
+        data = {'patient_id': self.patient_id, 'action': 'accept'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['detail'],"Request accepted.")
+
+        response = self.client.get(reverse('list-links'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]['status'], 'accepted')
+        
 class BodyStatsViewTests(BaseAPITestCase):
 
     def setUp(self):

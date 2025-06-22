@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BodyStats, BodyPart
+from .models import BodyStats, BodyPart, PatientDoctorLink
 from authentication.serializers import UserSerializer
 from datetime import datetime
 
@@ -35,3 +35,11 @@ class BodyStatsSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.last_modified = datetime.now() # auto update timestamp
         return super().update(instance, validated_data)
+
+class PatientDoctorLinkSerializer(serializers.ModelSerializer):
+    patient = UserSerializer()
+    doctor = UserSerializer()
+
+    class Meta:
+        model = PatientDoctorLink
+        fields = ['id', 'patient', 'doctor', 'status', 'created_at']
