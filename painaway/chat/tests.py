@@ -17,12 +17,14 @@ class ChatTests(APITestCase):
         self.user1 = User.objects.create_user(
             username='user1',
             email='user1@example.com',
-            password='testpass123'
+            password='testpass123',
+            phone_number='646645'
         )
         self.user2 = User.objects.create_user(
             username='user2',
             email='user2@example.com',
-            password='testpass123'
+            password='testpass123',
+            phone_number='616'
         )
         
         self.token1 = Token.objects.create(user=self.user1)
