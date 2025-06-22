@@ -74,9 +74,12 @@ Routes:
 - list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/)
 - bodyparts/ - GET will send you all the BodyPart objects in the db (must be 44), you need it to extract pks
 - stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "description": "fell on my scissors"} (first three fields are required, "description" is not), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient
+- prescription/?link_id=\<int:link.id> - GET, Patient and Doctor can send. You just pass the id of the link into query parameters and voila, you get the list of available prescriptions; POST, only Doctor can send data, you send the data like so {"link": link_id, "prescription": 'Anti-stubby', 'details': 'some details'} and a new prescription will be created (works only if the link.status == 'accepted'), and yes, you send link_id in both query parameters and json
+- prescription/?prescription_id=\<int:prescription.id> - PATCH, only Doctor can send data, you can alter 'prescription' and 'details' fields; DELETE, only Doctor can send data, just send the id in query parameters and the presription will be deleted
+- diagnosis/?link_id=\<int:link.id> - same as prescription/?link_id=\<int:link.id>, just swap word 'prescription' with 'diagnosis'
+- diagnosis/?diagnosis_id=\<int:diagnosis.id> - same as prescription/?prescription_id=\<int:prescription.id>, just swap word 'prescription' with 'diagnosis'
 
 # TODO Backend:
 - ~~Add relations (and restrictions) between Patient and Doctor groups~~
-- Add doc page
 - Add timeout (with autodeletion) for rejected links?
 - Deal with notifications
