@@ -1,19 +1,7 @@
 from rest_framework import serializers
-from .models import Note, BodyStats, BodyPart
+from .models import BodyStats, BodyPart
 from authentication.serializers import UserSerializer
 from datetime import datetime
-
-class NoteSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Note
-        fields = '__all__'
-        read_only_fields = ['owner', 'created_on']
-
-    def update(self, instance, validated_data):
-        instance.last_modified = datetime.now() # auto update timestamp
-        return super().update(instance, validated_data)
 
 class BodyPartSerializer(serializers.ModelSerializer):
     class Meta:

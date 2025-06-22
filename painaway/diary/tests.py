@@ -3,7 +3,7 @@ from rest_framework import status
 from django.urls import reverse
 from authentication.models import CustomUser
 from django.contrib.auth.models import Group
-from .models import Note, BodyStats, BodyPart
+from .models import BodyStats, BodyPart
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 
@@ -71,43 +71,6 @@ class LinkTest(BaseAPITestCase):
         url = reverse('doc-respond')
         data = {'patient_id': 404, 'action': 'accept'}
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 404)
-
-
-class NotesViewTests(BaseAPITestCase):
-
-    def test_create_note(self):
-        url = reverse('notes-view')
-        data = {'title': 'Test Note', 'body': 'Note content'}
-        response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['title'], 'Test Note')
-
-    def test_get_notes(self):
-        Note.objects.create(owner=self.user, title='Test 1', body='Body 1')
-        response = self.client.get(reverse('notes-view'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-
-    def test_patch_note(self):
-        note = Note.objects.create(owner=self.user, title='Old', body='Body')
-        response = self.client.patch(reverse('notes-view'), {'note_pk': note.pk, 'title': 'New'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], 'New')
-
-    def test_patch_wrong_note(self):
-        note = Note.objects.create(owner=self.user, title='Old', body='Body')
-        response = self.client.patch(reverse('notes-view'), {'note_pk': 3, 'title': 'New'})
-        self.assertEqual(response.status_code, 404)
-
-    def test_delete_note(self):
-        note = Note.objects.create(owner=self.user, title='Temp', body='To delete')
-        response = self.client.delete(reverse('notes-view'), {'note_pk': note.pk})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_delete_wrong_note(self):
-        note = Note.objects.create(owner=self.user, title='Temp', body='To delete')
-        response = self.client.delete(reverse('notes-view'), {'note_pk': 3})
         self.assertEqual(response.status_code, 404)
 
 class BodyStatsViewTests(BaseAPITestCase):
