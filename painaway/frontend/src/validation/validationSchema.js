@@ -35,25 +35,67 @@ const hardSignUpSchema = () => yup.object().shape({
     ),
 })
 
-const easySignUpSchema = (nameMessage, passwordMessage, required, equal) => yup.object().shape({
-  username: yup
+const easySignUpSchema = messages => yup.object().shape({
+  surname: yup
     .string()
     .trim()
-    .min(3, nameMessage)
-    .max(20, nameMessage)
-    .required(required),
+    .min(2, messages.minLength)
+    .required(messages.required),
+  name: yup
+    .string()
+    .trim()
+    .min(2, messages.minLength)
+    .required(messages.required),
+  patronymic: yup
+    .string()
+    .trim()
+    .min(2, messages.minLength)
+    .required(messages.required),
+  birthDay: yup
+    .number()
+    .typeError(messages.birthType)
+    .min(1, messages.birthDay)
+    .max(31, messages.birthDay)
+    .required(messages.required),
+  birthMonth: yup
+    .number()
+    .typeError(messages.birthError)
+    .min(1, messages.birthMonth)
+    .max(12, messages.birthMonth)
+    .required(messages.required),
+  birthYear: yup
+    .number()
+    .typeError(messages.birthError)
+    .min(1900, messages.birthDay)
+    .max(new Date().getFullYear())
+    .required(messages.required),
+  sex: yup
+    .string()
+    .oneOf(['male', 'female'], messages.genderError)
+    .required(messages.required),
+  login: yup
+    .string()
+    .trim()
+    .min(3, messages.loginMessage)
+    .max(20, messages.loginMessage)
+    .required(messages.required),
+  email: yup
+    .string()
+    .trim()
+    .email(messages.emailMessage)
+    .required(messages.required),
   password: yup
     .string()
     .trim()
-    .min(6, passwordMessage)
-    .required(required),
+    .min(6, messages.passwordMessage)
+    .required(messages.required),
   passwordConfirmation: yup
     .string()
     .trim()
-    .required(required)
+    .required(messages.required)
     .oneOf(
       [yup.ref('password'), null],
-      equal,
+      messages.equal,
     ),
 })
 
