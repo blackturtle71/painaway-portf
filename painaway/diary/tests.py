@@ -9,12 +9,12 @@ from datetime import datetime
 
 class BaseAPITestCase(APITestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', email='g@g.com', phone_number='4654566')
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', email='g@g.com')
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         self.patient_id = self.user.id
 
-        self.doc = CustomUser.objects.create_user(username='doc', password='testpass', email='d@g.com', phone_number='32231321')
+        self.doc = CustomUser.objects.create_user(username='doc', password='testpass', email='d@g.com')
         self.doc_token = Token.objects.create(user=self.doc)
         self.doc.groups.set([Group.objects.get(name='Doctor')])
         self.doc_id = self.doc.id
