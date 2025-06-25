@@ -9,14 +9,15 @@ import {
 import Header from './Header.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-import ChatPage from './pages/ChatPage.jsx'
+import PersonalPage from './pages/PersonalPage.jsx'
+// import ChatPage from './pages/ChatPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import { uiRoutes } from '../routes.js'
 
 const PrivateRoute = ({ children }) => {
   const token = useSelector(state => state.authReducer.token)
 
-  return token ? children : <Navigate to="/login" replace />
+  return token ? children : <Navigate to={uiRoutes.login()} replace />
 }
 
 const App = () => (
@@ -24,12 +25,11 @@ const App = () => (
     <div className="d-flex flex-column h-100">
       <Header />
       <Routes>
-        <Route path={uiRoutes.home()} element={<Navigate to={uiRoutes.chats()} replace />} />
         <Route
-          path={uiRoutes.chats()}
+          path={uiRoutes.home()}
           element={(
             <PrivateRoute>
-              <ChatPage />
+              <PersonalPage />
             </PrivateRoute>
           )}
         />
