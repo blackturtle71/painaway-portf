@@ -40,7 +40,7 @@ const LoginPage = () => {
       try {
         const response = await loginUser(values).unwrap()
         dispatch(persistAuth(response))
-        navigate(uiRoutes.chats()) // then change navigate to dairy
+        navigate(uiRoutes.home())
       }
       catch (err) {
         formik.setSubmitting(false)
@@ -59,8 +59,8 @@ const LoginPage = () => {
     formik,
     title: t('entry'),
     buttonTitle: t('entry'),
-    placeholderName: t('placeholders.login'),
-    placeholderPassword: t('placeholders.password'),
+    placeholderName: t('form.placeholders.login'),
+    placeholderPassword: t('form.placeholders.password'),
     noAccount: t('noAccount'),
     registration: t('registration'),
     error: t('errors.invalidFeedback'),
