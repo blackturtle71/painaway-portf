@@ -71,7 +71,7 @@ const easySignUpSchema = messages => yup.object().shape({
     .required(messages.required),
   sex: yup
     .string()
-    .oneOf(['male', 'female'], messages.genderError)
+    .oneOf(['M', 'F'], messages.genderError)
     .required(messages.required),
   login: yup
     .string()
@@ -95,7 +95,7 @@ const easySignUpSchema = messages => yup.object().shape({
     .required(messages.required)
     .oneOf(
       [yup.ref('password'), null],
-      messages.equal,
+      messages.passwordConfirmation,
     ),
 })
 
