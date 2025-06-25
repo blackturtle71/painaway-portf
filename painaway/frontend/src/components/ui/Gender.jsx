@@ -15,7 +15,7 @@ const Gender = (props) => {
       </Form.Label>
       <Col sm="9" className="d-flex gap-3">
         {genders.map((g) => {
-          const value = g.id === 1 ? 'male' : 'female'
+          const value = g.id === 1 ? 'M' : 'F'
           return (
             <Form.Check
               inline
