@@ -7,9 +7,8 @@ class CustomUser(AbstractUser):
     # TODO: add aditional fields if need be
     class Sex(models.TextChoices):
         MALE = "M", "Male"
-        FEMALE = "F", "FEMALE"
+        FEMALE = "F", "Female"
 
-    phone_number = models.CharField(max_length=15, blank=False,null=False, unique=True)
     email = models.EmailField(
         'email address',
         unique=True,

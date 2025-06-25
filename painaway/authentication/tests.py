@@ -38,7 +38,6 @@ class AuthenticationTests(APITestCase):
             "first_name": "Mike",
             "last_name": "Wazowski",
             "father_name": "Sarkesian",
-            "phone_number": "+777777787",
             "sex": "M",
             "date_of_birth": "2000-7-1"
         }
@@ -71,7 +70,6 @@ class AuthenticationTests(APITestCase):
             "first_name": "Mike",
             "last_name": "Wazowski",
             "father_name": "Sarkesian",
-            "phone_number": "+777777787",
             "sex": "F",
             "date_of_birth": "2030-1-1"
         }
@@ -86,7 +84,6 @@ class AuthenticationTests(APITestCase):
             "first_name": "Mike",
             "last_name": "Wazowski",
             "father_name": "Sarkesian",
-            "phone_number": "+777777787",
             "sex": "G",
             "date_of_birth": "2000-7-1"
         }
@@ -153,13 +150,11 @@ class AuthenticationTests(APITestCase):
     def test_profile_update(self):
         self.authenticate()
         data = {
-            'phone_number': "654654",
             'username': "wassupuser"
         }
         response = self.client.patch(self.profile_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual("wassupuser", response.data['username'])
-        self.assertEqual("654654", response.data['phone_number'])
 
     def test_profile_update_noneditable_field(self):
         self.authenticate()
