@@ -1,0 +1,38 @@
+@font-face {
+  font-weight: 500;
+  font-family: "Montserrat Medium";
+  src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
+}
+@import 'default_variables';
+@import 'header';
+@import 'login_page';
+@import 'signup_page';
+@import 'input_field';
+@import 'submit_button';
+
+#root {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+html {
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: "Montserrat Medium", sans-serif;
+  font-size: $primary-font-size;
+}

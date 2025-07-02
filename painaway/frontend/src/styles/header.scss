@@ -1,0 +1,47 @@
+.pain-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: $bg-color;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .logo img {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .main-nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    font-size: $secondary-font-size;
+  
+    ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+
+      &.active {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .notifications {
+    display: flex;
+    align-items: center;
+  }
+}
