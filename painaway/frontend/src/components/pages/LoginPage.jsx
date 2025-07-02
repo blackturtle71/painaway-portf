@@ -4,11 +4,6 @@ import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
-import {
-  Container,
-  Row,
-  Col,
-} from 'react-bootstrap'
 
 import LoginCard from '../ui/LoginCard.jsx'
 import { persistAuth } from '../../slices/authSlice.js'
@@ -70,13 +65,9 @@ const LoginPage = () => {
   }
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={8} lg={6}>
-          <LoginCard values={values} />
-        </Col>
-      </Row>
-    </Container>
+    <div className="login-page">
+      <LoginCard values={values} />
+    </div>
   )
 }
 

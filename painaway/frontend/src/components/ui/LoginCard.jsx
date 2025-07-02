@@ -1,4 +1,3 @@
-import { Form, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import InputField from './InputField.jsx'
@@ -8,11 +7,9 @@ const LoginCard = (props) => {
   const { values } = props
   const {
     formik,
-    title,
     buttonTitle,
     placeholderName,
     placeholderPassword,
-    noAccount,
     registration,
     error,
     path,
@@ -41,25 +38,17 @@ const LoginCard = (props) => {
   }
 
   return (
-    <Card className="shadow-sm">
-      <Card.Body className="p-lg-5">
-        <h1 className="mb-4">{title}</h1>
+    <div className="login-card">
+      <form onSubmit={formik.handleSubmit}>
+        <InputField values={propsUsername} />
+        <InputField values={propsPassword} />
+        <SubmitButton values={{ formik, buttonTitle }} />
+      </form>
 
-        <Form onSubmit={formik.handleSubmit}>
-          <InputField values={propsUsername} />
-          <InputField values={propsPassword} />
-
-          <SubmitButton values={{ formik, buttonTitle }} />
-        </Form>
-      </Card.Body>
-
-      <Card.Footer className="text-center py-4">
-        <div>
-          <span className="text-muted d-block">{noAccount}</span>
-          <Link to={path}>{registration}</Link>
-        </div>
-      </Card.Footer>
-    </Card>
+      <div className="auth-link">
+        <Link to={path}>{registration}</Link>
+      </div>
+    </div>
   )
 }
 
