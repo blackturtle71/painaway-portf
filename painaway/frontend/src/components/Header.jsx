@@ -1,59 +1,47 @@
-import {
-  Link,
-  Outlet,
-  useLocation,
-} from 'react-router-dom'
-import { Button, Navbar, Nav, Container } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { clearLocalStorage } from '../slices/authSlice'
+import cn from 'classnames'
+import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import Logo from '../assets/images/Logo.png'
+import bell from '../assets/images/Notifications.png'
 import { uiRoutes } from '../routes'
 
-const AuthButton = () => {
-  const dispatch = useDispatch()
-  const location = useLocation()
-  const token = useSelector(state => state.authReducer.token)
-
-  const handleLogOut = () => {
-    dispatch(clearLocalStorage())
-  }
+const Header = () => {
+  const { t } = useTranslation()
 
   return (
-    token
-      ? <Button onClick={handleLogOut}>Выйти</Button>
-      : <Button as={Link} to={uiRoutes.login()} state={{ from: location }}>Войти</Button>
+    <header className="pain-header">
+      <div className="container">
+        <a href="#" className="logo">
+          <img src={Logo} width="270" height="60" alt={t('alt.logo')} />
+        </a>
+
+        <nav id="main-navbar" className="main-nav">
+          <ul>
+            <li>
+              <NavLink
+                to={uiRoutes.dairy()}
+                className={({ isActive }) => cn('nav-link', { active: isActive })}
+              >
+                {t('dairy')}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to={uiRoutes.profile()}
+                className={({ isActive }) => cn('nav-link', { active: isActive })}
+              >
+                {t('profile')}
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="notifications">
+          <img src={bell} width="32" height="32" alt={t('alt.notifications')} />
+        </div>
+      </div>
+    </header>
   )
 }
-
-const RegisterButton = () => {
-  const token = useSelector(state => state.authReducer.token)
-
-  if (token) return null
-
-  return (
-    <Button as={Link} to={uiRoutes.register()} variant="outline-primary" className="bi bi-person">Регистрация</Button>
-  )
-}
-
-const Header = () => (
-  <>
-    <Navbar bg="light" expand="lg" className="pain-header sticky-top">
-      <Container>
-        <Navbar.Brand as={Link} to="/">БОЛИ.НЕТ</Navbar.Brand>
-        <Navbar.Toggle aria-controls="main-navbar" />
-        <Navbar.Collapse id="main-navbar">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/about">О нас</Nav.Link>
-            <Nav.Link as={Link} to="/contacts">Контакты</Nav.Link>
-          </Nav>
-          <div className="d-flex gap-2">
-            <RegisterButton />
-            <AuthButton />
-          </div>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-    <Outlet />
-  </>
-)
 
 export default Header
