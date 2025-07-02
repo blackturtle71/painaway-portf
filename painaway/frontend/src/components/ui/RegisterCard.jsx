@@ -1,4 +1,3 @@
-import { Form, Card, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import InputField from './InputField.jsx'
@@ -10,18 +9,13 @@ const RegisterCard = (props) => {
   const { values } = props
   const {
     formik,
-    title,
     buttonTitle,
     inputFields,
-    dateFields,
+    dataPlaceholder,
     dateOfBirth,
-    genders,
-    sex,
-    userExists,
-    haveAccount,
+    gender,
     login,
     path,
-    registerFailed,
     inputRef,
   } = values
 
@@ -52,7 +46,7 @@ const RegisterCard = (props) => {
   const propsLogin = {
     formik,
     ...inputFields.login,
-    failed: (formik.errors.login && formik.touched.login) || registerFailed,
+    failed: formik.errors.login && formik.touched.login,
     inputRef: null,
     error: formik.errors.login,
   }
@@ -60,7 +54,7 @@ const RegisterCard = (props) => {
   const propsEmail = {
     formik,
     ...inputFields.email,
-    failed: (formik.errors.email && formik.touched.email) || registerFailed,
+    failed: formik.errors.email && formik.touched.email,
     inputRef: null,
     error: formik.errors.email,
   }
@@ -68,7 +62,7 @@ const RegisterCard = (props) => {
   const propsPassword = {
     formik,
     ...inputFields.password,
-    failed: (formik.errors.password && formik.touched.password),
+    failed: formik.errors.password && formik.touched.password,
     inputRef: null,
     error: formik.errors.password,
   }
@@ -76,88 +70,45 @@ const RegisterCard = (props) => {
   const propsPasswordConfirmationValues = {
     formik,
     ...inputFields.passwordConfirmation,
-    failed: (
-      (formik.errors.passwordConfirmation && formik.touched.passwordConfirmation)
-      || registerFailed
-    ),
+    failed: formik.errors.passwordConfirmation && formik.touched.passwordConfirmation,
     inputRef: null,
-    error: registerFailed ? userExists : formik.errors.passwordConfirmation,
+    error: formik.errors.passwordConfirmation,
   }
 
   const propsBirth = {
     formik,
     label: dateOfBirth,
-    fields: [
-      { field: 'birthDay', ...dateFields.birthDay },
-      { field: 'birthMonth', ...dateFields.birthMonth },
-      { field: 'birthYear', ...dateFields.birthYear },
-    ],
+    placeholder: dataPlaceholder,
   }
 
-  const propsGender = { formik, genders, sex }
+  const propsGender = {
+    formik,
+    label: gender.label,
+    sex: gender.sex,
+    male: gender.male,
+    female: gender.female,
+  }
 
   return (
-    <Card className="shadow-sm">
-      <Card.Body className="p-4">
-        <h1 className="mb-4">{title}</h1>
+    <div className="signup-card">
+      <form onSubmit={formik.handleSubmit}>
+        <InputField values={propsSurname} />
+        <InputField values={propsName} />
+        <InputField values={propsPatronymic} />
+        <Gender values={propsGender} />
+        <DateOfBirth values={propsBirth} />
+        <InputField values={propsLogin} />
+        <InputField values={propsEmail} />
+        <InputField values={propsPassword} />
+        <InputField values={propsPasswordConfirmationValues} />
 
-        {/* Фамилия Имя Отчество */}
-        <Form onSubmit={formik.handleSubmit}>
-          <Row>
-            <Col md={4}>
-              <InputField values={propsSurname} />
-            </Col>
-            <Col md={4}>
-              <InputField values={propsName} />
-            </Col>
-            <Col md={4}>
-              <InputField values={propsPatronymic} />
-            </Col>
-          </Row>
+        <SubmitButton values={{ formik, buttonTitle }} />
+      </form>
 
-          {/* Дата рождения и Пол */}
-          <Row>
-            <Col md={8}>
-              <Col>
-                <DateOfBirth values={propsBirth} />
-              </Col>
-            </Col>
-            <Col md={4}>
-              <Gender values={propsGender} />
-            </Col>
-          </Row>
-
-          {/* Логин и Почта */}
-          <Row>
-            <Col md={6}>
-              <InputField values={propsLogin} />
-            </Col>
-            <Col md={6}>
-              <InputField values={propsEmail} />
-            </Col>
-          </Row>
-
-          {/* Пароль и Подтверждение */}
-          <Row>
-            <Col md={6}>
-              <InputField values={propsPassword} />
-            </Col>
-            <Col md={6}>
-              <InputField values={propsPasswordConfirmationValues} />
-            </Col>
-          </Row>
-
-          <SubmitButton values={{ formik, buttonTitle }} />
-        </Form>
-      </Card.Body>
-
-      <Card.Footer className="text-center py-4">
-        <div>
-          <span className="text-muted d-block">{haveAccount}</span>
-          <Link to={path}>{login}</Link>
-        </div>
-      </Card.Footer>
-    </Card>
+      <div className="auth-link">
+        <Link to={path}>{login}</Link>
+      </div>
+    </div>
   )
 }
 

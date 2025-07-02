@@ -1,4 +1,4 @@
-import Form from 'react-bootstrap/Form'
+import cn from 'classnames'
 
 const InputField = (props) => {
   const { values } = props
@@ -14,25 +14,22 @@ const InputField = (props) => {
   } = values
 
   return (
-    <Form.Floating className="mb-3">
-      <Form.Control
+    <div className="form-group">
+      <label htmlFor={field} className="form-label">{placeholder}</label>
+      <input
         id={field}
         name={field}
         type={type}
-        autoComplete={field}
-        placeholder={placeholder}
+        className={cn('form-input', { 'input-error': failed })}
+        value={formik.values[field]}
         onChange={formik.handleChange}
         onBlur={onBlur || formik.handleBlur}
-        value={formik.values[field]}
-        isInvalid={failed}
         disabled={formik.isSubmitting}
+        autoComplete={field}
         ref={inputRef}
       />
-      <Form.Label htmlFor={field}>{placeholder}</Form.Label>
-      <Form.Control.Feedback type="invalid">
-        {error}
-      </Form.Control.Feedback>
-    </Form.Floating>
+      {failed && <div className="error-message">{error}</div>}
+    </div>
   )
 }
 

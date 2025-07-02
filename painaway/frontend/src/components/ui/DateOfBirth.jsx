@@ -1,45 +1,33 @@
-import { Form, Row, Col } from 'react-bootstrap'
-
 const DateOfBirth = (props) => {
   const { values } = props
   const {
     formik,
     label,
-    fields,
+    placeholder,
   } = values
 
+  const failed = formik.errors.birthday && formik.touched.birthday
+  const error = formik.errors.birthday
+
   return (
-    <Form.Group as={Row} className="mb-3 align-items-center">
-      <Form.Label column sm={3} className="mb-0">
-        {label}
-      </Form.Label>
-      <Col sm={9}>
-        <Row>
-          {fields.map(({ field, ariaLabel, range }) => (
-            <Col key={field} xs={4}>
-              <Form.Select
-                name={field}
-                aria-label={ariaLabel}
-                value={formik.values[field]}
-                onChange={formik.handleChange}
-                isInvalid={formik.touched[field] && !!formik.errors[field]}
-                size="sm"
-              >
-                <option value="">{ariaLabel}</option>
-                {range.map(i => (
-                  <option key={i} value={i}>{i}</option>
-                ))}
-              </Form.Select>
-              {formik.touched[field] && formik.errors[field] && (
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors[field]}
-                </Form.Control.Feedback>
-              )}
-            </Col>
-          ))}
-        </Row>
-      </Col>
-    </Form.Group>
+    <div className="form-group date-group">
+      <label htmlFor="birthday" className="form-label">{label}</label>
+      <input
+        id="birthday"
+        name="birthday"
+        className="form-input"
+        type="date"
+        min="1900-01-01"
+        max={new Date().toISOString().split('T')[0]} // Current date
+        placeholder={placeholder}
+
+        value={formik.values.birth}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        autoComplete="bday"
+      />
+      {failed && <div className="error-message">{error}</div>}
+    </div>
   )
 }
 

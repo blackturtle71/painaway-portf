@@ -1,38 +1,35 @@
-import { Form, Row, Col } from 'react-bootstrap'
-
 const Gender = (props) => {
   const { values } = props
   const {
     formik,
+    label,
     sex,
-    genders,
+    male,
+    female,
   } = values
 
   return (
-    <Form.Group as={Row} className="mb-3 align-items-center">
-      <Form.Label column sm="3" className="mb-0">
-        {sex}
-      </Form.Label>
-      <Col sm="9" className="d-flex gap-3">
-        {genders.map((g) => {
-          const value = g.id === 1 ? 'M' : 'F'
-          return (
-            <Form.Check
-              inline
-              key={g.id}
-              type="radio"
-              id={`gender-${g.id}`}
-              label={g.gender}
-              name="sex"
-              value={value}
-              checked={formik.values.sex === value}
-              onChange={formik.handleChange}
-              isInvalid={formik.touched.sex && !!formik.errors.sex}
-            />
-          )
-        })}
-      </Col>
-    </Form.Group>
+    <div className="form-group gender-group">
+      <label id="sex" className="gender-label" htmlFor="sex">{sex}</label>
+      <div className="gender-toggle" role="group" aria-labelledby="sex" aria-label={label}>
+        <button
+          type="button"
+          className={formik.values.sex === 'M' ? 'active' : ''}
+          onClick={() => formik.setFieldValue('sex', 'M')}
+          aria-pressed={formik.values.sex === 'M'}
+        >
+          {male}
+        </button>
+        <button
+          type="button"
+          className={formik.values.sex === 'F' ? 'active' : ''}
+          onClick={() => formik.setFieldValue('sex', 'F')}
+          aria-pressed={formik.values.sex === 'F'}
+        >
+          {female}
+        </button>
+      </div>
+    </div>
   )
 }
 

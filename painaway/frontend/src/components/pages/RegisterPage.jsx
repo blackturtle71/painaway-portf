@@ -1,6 +1,5 @@
-import { Container, Row, Col } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
@@ -8,7 +7,6 @@ import { toast } from 'react-toastify'
 import RegisterCard from '../ui/RegisterCard.jsx'
 import { useSignupUserMutation } from '../../services/api/authApi.js'
 import { easySignUpSchema } from '../../validation/validationSchema.js'
-import { getDays, getMonths, getYears } from '../../helpers/dateUtils.js'
 import { uiRoutes } from '../../routes.js'
 
 const RegisterPage = () => {
@@ -16,7 +14,6 @@ const RegisterPage = () => {
   const navigate = useNavigate()
   const inputRef = useRef()
   const [signupUser] = useSignupUserMutation()
-  const [registerFailed, setRegisterFailed] = useState(false)
   const messages = {
     minLength: t('registerRules.minLength'),
     required: t('errors.required'),
@@ -40,10 +37,8 @@ const RegisterPage = () => {
       surname: '',
       name: '',
       patronymic: '',
-      birthDay: '',
-      birthMonth: '',
-      birthYear: '',
-      sex: '',
+      birthday: '',
+      sex: 'M',
       login: '',
       email: '',
       password: '',
@@ -62,11 +57,10 @@ const RegisterPage = () => {
           last_name: values.surname,
           father_name: values.patronymic,
           sex: values.sex,
-          date_of_birth: `${values.birthYear}-${values.birthMonth.padStart(2, '0')}-${values.birthDay.padStart(2, '0')}`,
+          date_of_birth: values.birthday,
         }).unwrap()
 
         toast.success(t('success.registration'))
-        setRegisterFailed(false)
         navigate(uiRoutes.login())
       }
       catch (err) {
@@ -74,13 +68,13 @@ const RegisterPage = () => {
         const errors = err.data || {}
 
         if (errors.username) {
-          toast.error(t('errors.userExists'))
-          setRegisterFailed(true)
+          formik.setFieldError('login', t('errors.loginExists'))
+          toast.error(t('errors.loginExists'))
         }
 
         if (errors.email) {
+          formik.setFieldError('email', t('errors.emailExists'))
           toast.error(t('errors.emailExists'))
-          setRegisterFailed(true)
         }
 
         if (err.status >= 500) {
@@ -117,48 +111,32 @@ const RegisterPage = () => {
     },
   }
 
-  const dateFields = {
-    birthDay: {
-      ariaLabel: t('form.ariaLabels.day'), range: getDays(),
-    },
-    birthMonth: {
-      ariaLabel: t('form.ariaLabels.month'), range: getMonths(),
-    },
-    birthYear: {
-      ariaLabel: t('form.ariaLabels.year'), range: getYears(),
-    },
+  const gender = {
+    label: t('form.gender.ariaLabel'),
+    sex: t('form.gender.sex'),
+    male: t('form.gender.male'),
+    female: t('form.gender.female'),
   }
-
-  const genders = [
-    { gender: t('form.gender.male'), type: 'radio', id: 1 },
-    { gender: t('form.gender.female'), type: 'radio', id: 2 },
-  ]
 
   const values = {
     formik,
     title: t('registration'),
     buttonTitle: t('makeRegistration'),
     inputFields,
-    dateFields,
+    dataPlaceholder: t('form.placeholders.date'),
     dateOfBirth: t('form.dateOfBirth'),
-    genders,
-    sex: t('form.gender.sex'),
-    userExists: t('errors.userExists'),
+    gender,
+    userExists: t('errors.loginExists'),
     haveAccount: t('haveAccount'),
     login: t('entry'),
     path: uiRoutes.login(),
-    registerFailed,
     inputRef,
   }
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={12} lg={10} xl={9}>
-          <RegisterCard values={values} />
-        </Col>
-      </Row>
-    </Container>
+    <div className="signup-page">
+      <RegisterCard values={values} />
+    </div>
   )
 }
 
