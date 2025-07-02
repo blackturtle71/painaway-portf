@@ -1,29 +1,30 @@
 export default {
   translation: {
     name: 'Боли.Нет',
-    aboutUs: 'О нас',
-    contacts: 'Контакты',
+    dairy: 'Дневник',
+    profile: 'Личный кабинет',
+    alt: {
+      logo: 'Дневник пациента лого',
+      notifications: 'Уведомления',
+    },
     form: {
       placeholders: {
         surname: 'Фамилия',
         name: 'Имя',
         patronymic: 'Отчество',
-        login: 'Ваш логин',
+        date: 'ДД.ММ.ГГГГ',
+        login: 'Логин',
         email: 'Электронная почта',
         password: 'Пароль',
         passwordConfirmation: 'Подтвердите пароль',
       },
       gender: {
+        ariaLabel: 'Выберите пол',
         sex: 'Пол',
-        male: 'Мужской',
-        female: 'Женский',
+        male: 'М',
+        female: 'Ж',
       },
       dateOfBirth: 'Дата рождения',
-      ariaLabels: {
-        day: 'День',
-        month: 'Месяц',
-        year: 'Год',
-      },
     },
     entry: 'Войти',
     noAccount: 'Нет аккаунта?',
@@ -39,10 +40,8 @@ export default {
     },
     registerRules: { // for easy version
       minLength: 'Минимум 2 символа',
-      birthDay: 'День должен быть от 1 до 31',
-      birthMonth: 'Месяц должен быть от 1 до 12',
-      birthYear: '',
-      birthType: 'Должно быть число',
+      birthType: 'Некорректная дата',
+      birthYear: 'Введите год от 1900 до текущего',
       login: 'От 3 до 20 символов',
       email: 'Неверный адрес',
       password: 'Не менее 6 символов',
