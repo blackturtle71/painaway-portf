@@ -12,5 +12,7 @@ export const uiRoutes = {
   home: () => '/',
   login: () => '/login',
   register: () => '/register',
+  dairy: () => '/dairy',
+  profile: () => '/profile',
   chats: () => '/chat/conversations',
 }
