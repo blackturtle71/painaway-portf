@@ -51,23 +51,19 @@ const easySignUpSchema = messages => yup.object().shape({
     .trim()
     .min(2, messages.minLength)
     .required(messages.required),
-  birthDay: yup
-    .number()
-    .typeError(messages.birthType)
-    .min(1, messages.birthDay)
-    .max(31, messages.birthDay)
-    .required(messages.required),
-  birthMonth: yup
-    .number()
-    .typeError(messages.birthError)
-    .min(1, messages.birthMonth)
-    .max(12, messages.birthMonth)
-    .required(messages.required),
-  birthYear: yup
-    .number()
-    .typeError(messages.birthError)
-    .min(1900, messages.birthDay)
-    .max(new Date().getFullYear())
+  birthday: yup
+    .string()
+    .test('is-date', messages.birthType, (value) => {
+      if (!value) return false
+      const parsed = Date.parse(value)
+      return !isNaN(parsed)
+    })
+    .test('min-date', messages.birthYear, (value) => {
+      return new Date(value) >= new Date(1900, 0, 1)
+    })
+    .test('max-date', messages.birthYear, (value) => {
+      return new Date(value) <= new Date()
+    })
     .required(messages.required),
   sex: yup
     .string()
@@ -83,6 +79,9 @@ const easySignUpSchema = messages => yup.object().shape({
     .string()
     .trim()
     .email(messages.emailMessage)
+    .test('has-domain', messages.emailMessage, (value) => {
+      return /^[^@]+@[^@]+\.[^@]+$/.test(value)
+    })
     .required(messages.required),
   password: yup
     .string()
