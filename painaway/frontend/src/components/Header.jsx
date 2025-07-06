@@ -1,9 +1,42 @@
 import cn from 'classnames'
 import { NavLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearLocalStorage } from '../slices/authSlice'
 import { useTranslation } from 'react-i18next'
 import Logo from '../assets/images/Logo.png'
 import bell from '../assets/images/Notifications.png'
 import { uiRoutes } from '../routes'
+import { profileApi } from '../services/api'
+
+const AuthButton = () => {
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const token = useSelector(state => state.authReducer.token)
+
+  const handleLogOut = () => {
+    dispatch(clearLocalStorage())
+    dispatch(profileApi.util.invalidateTags(['Profile']))
+  }
+
+  const handleOpenNotification = () => {
+    console.log('Open notification')
+  }
+
+  if (!token) return null
+
+  return (
+    <div className="group-btn">
+      <button
+        className="notification-btn"
+        onClick={handleOpenNotification}
+        aria-label={t('alt.notification')}
+      >
+        <img src={bell} width="32" height="32" alt={t('alt.notifications')} />
+      </button>
+      <button className="logout-btn" onClick={handleLogOut}>{t('exit')}</button>
+    </div>
+  )
+}
 
 const Header = () => {
   const { t } = useTranslation()
@@ -36,9 +69,7 @@ const Header = () => {
           </ul>
         </nav>
 
-        <div className="notifications">
-          <img src={bell} width="32" height="32" alt={t('alt.notifications')} />
-        </div>
+        <AuthButton />
       </div>
     </header>
   )
