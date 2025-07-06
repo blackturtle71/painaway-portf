@@ -8,6 +8,7 @@
   align-items: flex-start;
   
   .profile-section {
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 80px;
@@ -70,6 +71,10 @@
   flex-direction: column;
   gap: 15px;
   align-items: flex-start;
+
+  form {
+    width: 100%;
+  }
 
   .attach-field {
     display: grid;
