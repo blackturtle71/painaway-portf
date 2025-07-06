@@ -10,7 +10,7 @@ export const apiRoutes = {
   doctorData: () => '/diary/list_links/',
   diagnosisData: linkId => `/diary/diagnosis/?link_id=${linkId}/`,
   prescriptionData: linkId => `/diary/prescription/?link_id=${linkId}/`,
-  selectDoctor: () => '/dairy/link_doc/',
+  selectDoctor: () => '/diary/link_doc/',
 }
 
 export const uiRoutes = {
