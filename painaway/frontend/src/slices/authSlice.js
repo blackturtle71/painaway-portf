@@ -2,24 +2,23 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   token: null,
-  user: null,
 }
 
 export const persistAuth = credentials => (dispatch) => {
-  const { user, token } = credentials
+  const { token } = credentials
 
-  dispatch(setCredentials({ user, token }))
+  dispatch(setCredentials({ token }))
 
-  localStorage.setItem('user', JSON.stringify(user))
-  localStorage.setItem('token', JSON.stringify(token))
+  // localStorage.setItem('user', JSON.stringify(user))
+  localStorage.setItem('token', token)
 }
 
 export const restoreAuth = () => (dispatch) => {
   const token = localStorage.getItem('token')
-  const user = localStorage.getItem('user')
-
-  if (user && token) {
-    dispatch(setCredentials({ user, token }))
+  // const user = localStorage.getItem('user')
+  console.log('Restoring auth:', token)
+  if (token) {
+    dispatch(setCredentials({ token }))
   }
 
   return token
@@ -27,7 +26,7 @@ export const restoreAuth = () => (dispatch) => {
 
 export const clearLocalStorage = () => (dispatch) => {
   localStorage.removeItem('token')
-  localStorage.removeItem('user')
+  // localStorage.removeItem('user')
   dispatch(logOut())
 }
 
@@ -36,12 +35,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { user = null, token } = action.payload
-      state.user = user
+      const { token } = action.payload
+      // state.user = user
       state.token = token
     },
     logOut: (state) => {
-      state.user = null
+      // state.user = null
       state.token = null
     },
   },
