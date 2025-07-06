@@ -13,3 +13,10 @@ export {
   useGetMessagesQuery,
   useDeleteMessagesMutation,
 } from './messagesApi.js'
+export {
+  profileApi,
+  useGetProfileDataQuery,
+  useGetDoctorQuery,
+  useGetPrescriptionDataQuery,
+  useSelectDoctorMutation,
+} from './profileApi.js'
