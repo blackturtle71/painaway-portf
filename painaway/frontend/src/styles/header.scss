@@ -40,8 +40,26 @@
     }
   }
 
-  .notifications {
+  .group-btn {
     display: flex;
-    align-items: center;
+    gap: 20px;
+
+    .notification-btn {
+      border: none;
+      background-color: $bg-color;
+    }
+
+    .logout-btn {
+      padding: 0.5rem 1.2rem;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: $border-radius;
+      font-size: $secondary-font-size;
+      
+      &:hover {
+        background-color: $hover-color;
+      }
+    }
   }
 }
