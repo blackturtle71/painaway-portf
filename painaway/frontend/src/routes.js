@@ -6,6 +6,11 @@ export const apiRoutes = {
   chats: () => '/chat/conversations/',
   chatWith: id => `/chat/conversations/${id}/`,
   deleteMessagesWith: peerId => `/chat/conversations/delete/${peerId}/`,
+  profileData: () => 'auth/profile/',
+  doctorData: () => '/diary/list_links/',
+  diagnosisData: linkId => `/diary/diagnosis/?link_id=${linkId}/`,
+  prescriptionData: linkId => `/diary/prescription/?link_id=${linkId}/`,
+  selectDoctor: () => '/dairy/link_doc/',
 }
 
 export const uiRoutes = {
