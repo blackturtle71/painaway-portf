@@ -18,22 +18,24 @@ const DocForm = ({ values }) => {
         </span>
         <span className="field-value">{doctor}</span>
       </div>
-      <div className="attach-field">
-        <div className="form-group">
-          <label htmlFor="doctorLogin" className="sr-only">{t('form.placeholders.getDoctor')}</label>
-          <input
-            id="doctorLogin"
-            name="doctorLogin"
-            type="text"
-            className="form-input"
-            placeholder={t('form.placeholders.getDoctor')}
-            value={formik.values.doctorLogin}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+      <form onSubmit={formik.handleSubmit}>
+        <div className="attach-field">
+          <div className="form-group">
+            <label htmlFor="doctorLogin" className="sr-only">{t('form.placeholders.getDoctor')}</label>
+            <input
+              id="doctorLogin"
+              name="doctorLogin"
+              type="text"
+              className="form-input"
+              placeholder={t('form.placeholders.getDoctor')}
+              value={formik.values.doctorLogin}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
+          <SubmitButton values={buttonProps} />
         </div>
-        <SubmitButton values={buttonProps} />
-      </div>
+      </form>
     </div>
   )
 }
