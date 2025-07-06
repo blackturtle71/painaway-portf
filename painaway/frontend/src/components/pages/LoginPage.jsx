@@ -10,6 +10,7 @@ import { persistAuth } from '../../slices/authSlice.js'
 import { useLoginUserMutation } from '../../services/api/authApi.js'
 import { loginSchema } from '../../validation/validationSchema.js'
 import { uiRoutes } from '../../routes.js'
+import { profileApi } from '../../services/api/profileApi.js'
 
 const LoginPage = () => {
   const { t } = useTranslation()
@@ -35,7 +36,8 @@ const LoginPage = () => {
       try {
         const response = await loginUser(values).unwrap()
         dispatch(persistAuth(response))
-        navigate(uiRoutes.home())
+        dispatch(profileApi.util.invalidateTags(['Profile']))
+        navigate(uiRoutes.profile())
       }
       catch (err) {
         formik.setSubmitting(false)
