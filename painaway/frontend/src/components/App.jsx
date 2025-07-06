@@ -26,7 +26,7 @@ const App = () => (
       <Header />
       <Routes>
         <Route
-          path={uiRoutes.home()}
+          path={uiRoutes.profile()}
           element={(
             <PrivateRoute>
               <PersonalPage />
