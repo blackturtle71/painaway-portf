@@ -17,6 +17,7 @@ export default {
         email: 'Электронная почта',
         password: 'Пароль',
         passwordConfirmation: 'Подтвердите пароль',
+        getDoctor: 'Введите логин врача',
       },
       gender: {
         ariaLabel: 'Выберите пол',
@@ -27,6 +28,7 @@ export default {
       dateOfBirth: 'Дата рождения',
     },
     entry: 'Войти',
+    exit: 'Выйти',
     noAccount: 'Нет аккаунта?',
     haveAccount: 'Уже есть аккаунт?',
     registration: 'Регистрация',
@@ -49,6 +51,18 @@ export default {
     },
     success: {
       registration: 'Регистрация прошла успешно!',
+      attachment: 'Запрос на прикрепление отправлен!',
+    },
+    profilePage: {
+      fullName: 'ФИО',
+      sex: 'Пол',
+      birthday: 'Дата рождения',
+      email: 'Эл. почта',
+      login: 'Логин',
+      doctor: 'Лечащий врач',
+      notAssigned: 'Отсутствует',
+      treatment: 'Прописанное лечение',
+      attachButton: 'Прикрепиться',
     },
     errors: {
       invalidFeedback: 'Неверные имя пользователя или пароль',
