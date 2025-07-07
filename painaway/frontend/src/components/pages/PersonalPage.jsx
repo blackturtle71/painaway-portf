@@ -55,8 +55,8 @@ const PersonalPage = () => {
     },
     onSubmit: async (values, { resetForm }) => {
       try {
-        const responce = await selectDoctor(values.doctorLogin).unwrap()
-        console.log('ответ от сервера:', responce)
+        const response = await selectDoctor(values.doctorLogin).unwrap()
+        console.log('ответ от сервера:', response)
         toast.success(t('success.attachment'))
         resetForm()
       }
