@@ -30,7 +30,7 @@ const PersonalPage = () => {
   // } = useGetPrescriptionDataQuery(linkId, { skip: !linkId })
 
   const [selectDoctor] = useSelectDoctorMutation()
-  // console.log(profileData)
+  console.log('ProfileData:', profileData)
   // console.log('linksData:', linksData)
   // console.log(doctor)
 
@@ -70,19 +70,24 @@ const PersonalPage = () => {
     return <div>Loading...</div>
   }
 
+  const isDoctor = profileData.groups?.includes('Doctor')
+
   const profileProps = { profileData }
   const formProps = { formik, doctor }
   const infoProps = { doctor, treatment }
 
   return (
-    <div className="personal-page">
+    <section className="personal-page">
       <div className="profile-section">
         <ProfileCard values={profileProps} />
+      </div>
+
+      {!isDoctor && (
         <div className="attending-physician">
           {doctor === t('profilePage.notAssigned') ? <DocForm values={formProps} /> : <DocInfo values={infoProps} />}
         </div>
-      </div>
-    </div>
+      )}
+    </section>
   )
 }
 
