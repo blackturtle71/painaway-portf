@@ -68,9 +68,9 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="login-page">
+    <section className="login-page">
       <LoginCard values={values} />
-    </div>
+    </section>
   )
 }
 

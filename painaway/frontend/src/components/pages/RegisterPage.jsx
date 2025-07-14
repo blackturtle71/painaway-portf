@@ -134,9 +134,9 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="signup-page">
+    <section className="signup-page">
       <RegisterCard values={values} />
-    </div>
+    </section>
   )
 }
 
