@@ -1,5 +1,7 @@
+@use './default_variables' as *;
+
 .form-group {
-  margin-bottom: 30px;
+  margin-bottom: 8px;
 
   .form-label {
     display: block;
@@ -26,6 +28,7 @@
   }
 
   .error-message {
+    height: $secondary-font-size;
     color: $error-color;
     font-size: $secondary-font-size;
     margin-top: 0.25rem;

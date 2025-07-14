@@ -1,3 +1,5 @@
+@use './default_variables' as *;
+
 .signup-page {
   height: 100vh;
   overflow-y: auto;
@@ -5,13 +7,12 @@
   justify-content: center;
   align-items: flex-start;
   background-color: $bg-color;
-  padding: 68px 0 89px;
+  padding: 74px;
 
   .signup-card {
     width: 100%;
     max-width: 400px;
-    padding: 0 16px;
-    box-sizing: border-box;
+    margin-bottom: 89px;
   }
 
   .auth-link {
@@ -31,14 +32,14 @@
   }
 }
 
-.gender-group {
+.form-group.gender-group {
   display: flex;
+  margin-bottom: 30px;
   gap: 20px;
   align-items: center;
 
   .gender-toggle {
     display: flex;
-    flex-grow: 1;
     width: 100%;
     border: 1px solid #ccc;
     border-radius: $border-radius;
@@ -48,6 +49,8 @@
     flex: 1;
     border: none;
     height: 50px;
+    background-color: transparent;
+    cursor: pointer;
 
     &:first-child {
       border-radius: $border-radius 0 0 $border-radius;

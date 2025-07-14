@@ -1,3 +1,5 @@
+@use './default_variables' as *;
+
 .login-page {
   display: flex;
   justify-content: center;
@@ -9,8 +11,6 @@
   .login-card {
     width: 100%;
     max-width: 400px;
-    padding: 0 16px;
-    box-sizing: border-box;
   }
 
   .auth-link {
