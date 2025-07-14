@@ -1,18 +1,19 @@
-const SubmitButton = (props) => {
-  const { values } = props
-  const { formik, buttonTitle } = values
-
-  return (
-    <div className="form-submit">
-      <button
-        type="submit"
-        className="submit-button"
-        disabled={formik.isSubmitting}
-      >
-        {buttonTitle}
-      </button>
-    </div>
-  )
-}
+const SubmitButton = ({
+  title,
+  disabled = false,
+  type = 'submit',
+  onClick,
+}) => (
+  <div className="form-submit">
+    <button
+      type={type}
+      className="submit-button"
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {title}
+    </button>
+  </div>
+)
 
 export default SubmitButton

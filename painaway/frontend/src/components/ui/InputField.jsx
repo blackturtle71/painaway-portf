@@ -1,34 +1,43 @@
 import cn from 'classnames'
 
-const InputField = (props) => {
-  const { values } = props
-  const {
-    formik,
-    field,
-    type,
-    placeholder,
-    failed,
-    onBlur,
-    inputRef,
-    error,
-  } = values
+const InputField = ({
+  id,
+  name,
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  disabled = false,
+  inputRef,
+  error,
+  touched,
+  showLabel = true,
+}) => {
+  const failed = Boolean(error && touched)
 
   return (
     <div className="form-group">
-      <label htmlFor={field} className="form-label">{placeholder}</label>
+      {showLabel && placeholder && (
+        <label htmlFor={id || name} className="form-label">{placeholder}</label>
+      )}
+
       <input
-        id={field}
-        name={field}
+        id={id || name}
+        name={name}
         type={type}
         className={cn('form-input', { 'input-error': failed })}
-        value={formik.values[field]}
-        onChange={formik.handleChange}
-        onBlur={onBlur || formik.handleBlur}
-        disabled={formik.isSubmitting}
-        autoComplete={field}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        disabled={disabled}
+        autoComplete={name}
         ref={inputRef}
+        placeholder={!showLabel ? placeholder : ''}
       />
-      {failed && <div className="error-message">{error}</div>}
+      <div className="error-message">
+        {failed ? error : ' '}
+      </div>
     </div>
   )
 }
