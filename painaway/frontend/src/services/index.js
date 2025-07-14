@@ -16,6 +16,7 @@ import {
 const authPersistConfig = {
   key: 'authReducer', // ключ под, которым данные сохраняются в localStorage
   storage, // куда сохраняем => получается authReducer: {"token":"ваш_токен"}
+  whitelist: ['token', 'user'], // что сохраняем
 }
 
 const rootReducer = combineReducers({
