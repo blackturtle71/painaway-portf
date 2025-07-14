@@ -18,6 +18,7 @@ export const uiRoutes = {
   login: () => '/login',
   register: () => '/register',
   dairy: () => '/dairy',
+  patients: () => '/patients',
   profile: () => '/profile',
   chats: () => '/chat/conversations',
 }
