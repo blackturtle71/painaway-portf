@@ -4,6 +4,7 @@ import InputField from './InputField.jsx'
 import DateOfBirth from './DateOfBirth.jsx'
 import Gender from './Gender.jsx'
 import SubmitButton from './SubmitButton.jsx'
+import { Fragment } from 'react'
 
 const RegisterCard = (props) => {
   const { values } = props
@@ -19,90 +20,54 @@ const RegisterCard = (props) => {
     inputRef,
   } = values
 
-  const propsSurname = {
-    formik,
-    ...inputFields.surname,
-    failed: formik.errors.surname && formik.touched.surname,
-    inputRef,
-    error: formik.errors.surname,
-  }
-
-  const propsName = {
-    formik,
-    ...inputFields.name,
-    failed: formik.errors.name && formik.touched.name,
-    inputRef: null,
-    error: formik.errors.name,
-  }
-
-  const propsPatronymic = {
-    formik,
-    ...inputFields.patronymic,
-    failed: formik.errors.patronymic && formik.touched.patronymic,
-    inputRef: null,
-    error: formik.errors.patronymic,
-  }
-
-  const propsLogin = {
-    formik,
-    ...inputFields.login,
-    failed: formik.errors.login && formik.touched.login,
-    inputRef: null,
-    error: formik.errors.login,
-  }
-
-  const propsEmail = {
-    formik,
-    ...inputFields.email,
-    failed: formik.errors.email && formik.touched.email,
-    inputRef: null,
-    error: formik.errors.email,
-  }
-
-  const propsPassword = {
-    formik,
-    ...inputFields.password,
-    failed: formik.errors.password && formik.touched.password,
-    inputRef: null,
-    error: formik.errors.password,
-  }
-
-  const propsPasswordConfirmationValues = {
-    formik,
-    ...inputFields.passwordConfirmation,
-    failed: formik.errors.passwordConfirmation && formik.touched.passwordConfirmation,
-    inputRef: null,
-    error: formik.errors.passwordConfirmation,
-  }
-
-  const propsBirth = {
-    formik,
-    label: dateOfBirth,
-    placeholder: dataPlaceholder,
-  }
-
-  const propsGender = {
-    formik,
-    label: gender.label,
-    sex: gender.sex,
-    male: gender.male,
-    female: gender.female,
-  }
+  const fields = ['surname', 'name', 'patronymic', 'email', 'login', 'password', 'passwordConfirmation']
 
   return (
     <div className="signup-card">
       <form onSubmit={formik.handleSubmit}>
-        <InputField values={propsSurname} />
-        <InputField values={propsName} />
-        <InputField values={propsPatronymic} />
-        <Gender values={propsGender} />
-        <DateOfBirth values={propsBirth} />
-        <InputField values={propsLogin} />
-        <InputField values={propsEmail} />
-        <InputField values={propsPassword} />
-        <InputField values={propsPasswordConfirmationValues} />
+        {fields.map(field => (
+          <Fragment key={field}>
+            <InputField
+              key={field}
+              name={field}
+              type={inputFields[field].type}
+              placeholder={inputFields[field].placeholder}
+              value={formik.values[field]}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors[field]}
+              touched={formik.touched[field]}
+              inputRef={field === 'surname' ? inputRef : null}
+              disabled={formik.isSubmitting}
+            />
 
-        <SubmitButton values={{ formik, buttonTitle }} />
+            {field === 'patronymic' && (
+              <>
+                <Gender
+                  values={{
+                    formik,
+                    label: gender.label,
+                    sex: gender.sex,
+                    male: gender.male,
+                    female: gender.female,
+                  }}
+                />
+                <DateOfBirth
+                  values={{
+                    formik,
+                    label: dateOfBirth,
+                    placeholder: dataPlaceholder,
+                  }}
+                />
+              </>
+            )}
+          </Fragment>
+        ))}
+
+        <SubmitButton
+          title={buttonTitle}
+          disabled={formik.isSubmitting}
+        />
       </form>
 
       <div className="auth-link">

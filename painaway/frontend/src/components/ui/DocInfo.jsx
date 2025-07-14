@@ -6,22 +6,27 @@ const DocInfo = (props) => {
   const { doctor, treatment } = values
 
   return (
-    <div className="doctor-info">
-      <div className="physician-field">
-        <span className="field-label">
-          {t('profilePage.doctor')}
-          :
-        </span>
-        <span className="field-value">{doctor}</span>
-      </div>
-      <div className="physician-field">
-        <span className="field-label">
-          {t('profilePage.treatment')}
-          :
-        </span>
-        <span className="field-value">{treatment}</span>
-      </div>
-    </div>
+    <section className="doctor-info">
+      <dl>
+        <div className="physician-field">
+          <dt className="field-label">
+            {t('profilePage.doctor')}
+            :
+          </dt>
+          <dd className="filed-label">{doctor}</dd>
+        </div>
+      </dl>
+
+      <dl>
+        <div className="physician-field">
+          <dt className="field-label">
+            {t('profilePage.treatment')}
+            :
+          </dt>
+          <dd className="filed-label">{treatment}</dd>
+        </div>
+      </dl>
+    </section>
   )
 }
 
