@@ -26,7 +26,9 @@ const DateOfBirth = (props) => {
         onBlur={formik.handleBlur}
         autoComplete="bday"
       />
-      {failed && <div className="error-message">{error}</div>}
+      <div className="error-message">
+        {failed ? error : ' '}
+      </div>
     </div>
   )
 }
