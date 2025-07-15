@@ -7,10 +7,11 @@ export const apiRoutes = {
   chatWith: id => `/chat/conversations/${id}/`,
   deleteMessagesWith: peerId => `/chat/conversations/delete/${peerId}/`,
   profileData: () => 'auth/profile/',
-  doctorData: () => '/diary/list_links/',
+  linksData: () => '/diary/list_links/',
   diagnosisData: linkId => `/diary/diagnosis/?link_id=${linkId}/`,
   prescriptionData: linkId => `/diary/prescription/?link_id=${linkId}/`,
   selectDoctor: () => '/diary/link_doc/',
+  respondToLinkRequest: () => '/diary/doc_respond/',
 }
 
 export const uiRoutes = {
