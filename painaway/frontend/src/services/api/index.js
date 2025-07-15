@@ -2,6 +2,7 @@ export {
   authApi,
   useSignupUserMutation,
   useLoginUserMutation,
+  useGetProfileDataQuery,
 } from './authApi.js'
 export {
   chatsApi,
@@ -14,9 +15,9 @@ export {
   useDeleteMessagesMutation,
 } from './messagesApi.js'
 export {
-  profileApi,
-  useGetProfileDataQuery,
-  useGetDoctorQuery,
+  linksApi,
+  useGetLinksQuery,
   useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
-} from './profileApi.js'
+  useRespondToLinkRequestMutation,
+} from './linksApi.js'
