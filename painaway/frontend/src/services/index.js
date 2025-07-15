@@ -6,11 +6,12 @@ import { combineReducers } from 'redux'
 import authReducer from '../slices/authSlice.js'
 import chatsReducer from '../slices/chatsSlice.js'
 import profileReducer from '../slices/profileSlice.js'
+import modalsReducer from '../slices/modalsSlice.js'
 import {
   authApi,
   chatsApi,
   messagesApi,
-  profileApi,
+  linksApi,
 } from './api/index.js'
 
 const authPersistConfig = {
@@ -25,10 +26,11 @@ const rootReducer = combineReducers({
   authReducer: persistReducer(authPersistConfig, authReducer),
   chatsReducer,
   profileReducer,
+  modalsReducer,
   [authApi.reducerPath]: authApi.reducer,
   [chatsApi.reducerPath]: chatsApi.reducer,
   [messagesApi.reducerPath]: messagesApi.reducer,
-  [profileApi.reducerPath]: profileApi.reducer,
+  [linksApi.reducerPath]: linksApi.reducer,
 })
 
 const store = configureStore({
@@ -39,7 +41,7 @@ const store = configureStore({
     authApi.middleware,
     chatsApi.middleware,
     messagesApi.middleware,
-    profileApi.middleware,
+    linksApi.middleware,
   ),
 })
 
