@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { useEffect } from 'react'
 import { useFormik } from 'formik'
 import {
-  useGetDoctorQuery,
+  useGetLinksQuery,
   useGetProfileDataQuery,
   // useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
@@ -23,7 +23,7 @@ const PersonalPage = () => {
   const treatment = useSelector(state => state.profileReducer.treatment)
 
   const { data: profileData, isLoading } = useGetProfileDataQuery()
-  const { data: linksData, isSuccess } = useGetDoctorQuery()
+  const { data: linksData, isSuccess } = useGetLinksQuery()
   // const {
   //  data: prescriptionsData,
   //   isSuccess: prescriptionSuccess,
@@ -31,7 +31,7 @@ const PersonalPage = () => {
 
   const [selectDoctor] = useSelectDoctorMutation()
   console.log('ProfileData:', profileData)
-  // console.log('linksData:', linksData)
+  console.log('linksData:', linksData)
   // console.log(doctor)
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import { persistAuth } from '../../slices/authSlice.js'
 import { useLoginUserMutation } from '../../services/api/authApi.js'
 import { loginSchema } from '../../validation/validationSchema.js'
 import { uiRoutes } from '../../routes.js'
-import { profileApi } from '../../services/api/profileApi.js'
+import { authApi } from '../../services/api/index.js'
 
 const LoginPage = () => {
   const { t } = useTranslation()
@@ -37,7 +37,7 @@ const LoginPage = () => {
         const response = await loginUser(values).unwrap()
         console.log('Вход', response)
         dispatch(persistAuth(response))
-        dispatch(profileApi.util.invalidateTags(['Profile']))
+        dispatch(authApi.util.invalidateTags(['Profile']))
         navigate(uiRoutes.profile())
       }
       catch (err) {
