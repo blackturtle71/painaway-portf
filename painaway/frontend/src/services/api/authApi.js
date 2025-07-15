@@ -3,7 +3,19 @@ import { apiBase, apiRoutes } from '../../routes.js'
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ baseUrl: apiBase }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: apiBase,
+    prepareHeaders: (headers, { getState }) => {
+      const { token } = getState().authReducer
+
+      if (token) {
+        headers.set('Authorization', `Token ${token}`)
+      }
+
+      return headers
+    },
+  }),
+  tagTypes: ['Profile'],
   endpoints: builder => ({
     signupUser: builder.mutation({
       query: userData => ({
@@ -19,10 +31,15 @@ export const authApi = createApi({
         body: userData,
       }),
     }),
+    getProfileData: builder.query({
+      query: () => apiRoutes.profileData(),
+      providesTags: ['Profile'],
+    }),
   }),
 })
 
 export const {
   useSignupUserMutation,
   useLoginUserMutation,
+  useGetProfileDataQuery,
 } = authApi

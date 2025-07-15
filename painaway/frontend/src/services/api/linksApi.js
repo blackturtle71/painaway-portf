@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { apiBase, apiRoutes } from '../../routes.js'
 
-export const profileApi = createApi({
-  reducerPath: 'profileApi',
+export const linksApi = createApi({
+  reducerPath: 'linksApi',
   baseQuery: fetchBaseQuery({
     baseUrl: apiBase,
     prepareHeaders: (headers, { getState }) => {
@@ -15,14 +15,10 @@ export const profileApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Profile'],
   endpoints: builder => ({
-    getProfileData: builder.query({
-      query: () => apiRoutes.profileData(),
-      providesTags: ['Profile'],
-    }),
-    getDoctor: builder.query({
-      query: () => apiRoutes.doctorData(),
+    // get all links (doctor - patient)
+    getLinks: builder.query({
+      query: () => apiRoutes.linksData(),
     }),
     getPrescriptionData: builder.query({
       query: linkId => apiRoutes.prescriptionData(linkId),
@@ -34,12 +30,19 @@ export const profileApi = createApi({
         body: { doc_username: docLogin },
       }),
     }),
+    respondToLinkRequest: builder.mutation({
+      query: ({ patientId, action }) => ({
+        url: apiRoutes.respondToLinkRequest(),
+        method: 'POST',
+        body: { patient_id: patientId, action },
+      }),
+    }),
   }),
 })
 
 export const {
-  useGetProfileDataQuery,
-  useGetDoctorQuery,
+  useGetLinksQuery,
   useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
-} = profileApi
+  useRespondToLinkRequestMutation,
+} = linksApi
