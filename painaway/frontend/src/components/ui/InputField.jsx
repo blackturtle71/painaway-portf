@@ -22,21 +22,23 @@ const InputField = ({
         <label htmlFor={id || name} className="form-label">{placeholder}</label>
       )}
 
-      <input
-        id={id || name}
-        name={name}
-        type={type}
-        className={cn('form-input', { 'input-error': failed })}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        disabled={disabled}
-        autoComplete={name}
-        ref={inputRef}
-        placeholder={!showLabel ? placeholder : ''}
-      />
-      <div className="error-message">
-        {failed ? error : ' '}
+      <div className="input-wrapper">
+        <input
+          id={id || name}
+          name={name}
+          type={type}
+          className={cn('form-input', { 'input-error': failed })}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          disabled={disabled}
+          autoComplete={name}
+          ref={inputRef}
+          placeholder={!showLabel ? placeholder : ''}
+        />
+        <div className="error-message">
+          {failed ? error : ' '}
+        </div>
       </div>
     </div>
   )
