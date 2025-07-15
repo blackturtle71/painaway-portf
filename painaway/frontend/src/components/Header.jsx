@@ -5,7 +5,7 @@ import Logo from '../assets/images/Logo.png'
 import bell from '../assets/images/Notifications.png'
 import Navigation from './ui/Navigation'
 import { uiRoutes } from '../routes'
-import { profileApi } from '../services/api'
+import { authApi } from '../services/api'
 
 const AuthButton = () => {
   const { t } = useTranslation()
@@ -14,7 +14,7 @@ const AuthButton = () => {
 
   const handleLogOut = () => {
     dispatch(clearLocalStorage())
-    dispatch(profileApi.util.invalidateTags(['Profile']))
+    dispatch(authApi.util.invalidateTags(['Profile']))
   }
 
   const handleOpenNotification = () => {
