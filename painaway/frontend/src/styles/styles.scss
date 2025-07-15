@@ -1,23 +1,24 @@
+@use './default_variables' as *;
+@use './header';
+@use './login_page';
+@use './signup_page';
+@use './profile';
+@use './patients_page';
+@use './modals';
+@use './input_field';
+@use './submit_button';
+
 @font-face {
-  font-weight: 500;
+  font-weight: $base-font-weight;
   font-family: "Montserrat Medium";
   src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
-}
-@import 'default_variables';
-@import 'header';
-@import 'login_page';
-@import 'signup_page';
-@import 'profile';
-@import 'input_field';
-@import 'submit_button';
-
-#root {
-  height: 100vh;
-  overflow-y: auto;
 }
 
 html {
   box-sizing: border-box;
+  height: 100%;
+  scroll-behavior: smooth;
+  font-size: 100%; 
 }
 *,
 *::before,
@@ -25,15 +26,26 @@ html {
   box-sizing: inherit;
 }
 
-html, body {
+body {
   height: 100%;
-  margin: 0;
-  padding: 0;
+  overflow: hidden; // запретить глобальный scroll — контролировать локально
+  font-family: "Montserrat Medium", sans-serif;
+  font-size: $primary-font-size;
+  background-color: $bg-color;
+  color: $primary-color;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
-body {
-  box-sizing: border-box;
-  font-family: "Montserrat Medium", sans-serif;
-  font-size: $primary-font-size;
+main {
+  flex: 1 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
