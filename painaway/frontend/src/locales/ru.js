@@ -2,10 +2,16 @@ export default {
   translation: {
     name: 'Боли.Нет',
     dairy: 'Дневник',
+    patients: 'Пациенты',
     profile: 'Личный кабинет',
     alt: {
+      mainNav: 'Меню пользователя',
+      authControls: 'Кнопки уведомлений и выхода',
       logo: 'Дневник пациента лого',
       notifications: 'Уведомления',
+      closeModal: 'Закрыть модальное окно',
+      acceptButton: 'Принять заявку',
+      rejectButton: 'Отклонить заявку',
     },
     form: {
       placeholders: {
@@ -63,6 +69,18 @@ export default {
       notAssigned: 'Отсутствует',
       treatment: 'Прописанное лечение',
       attachButton: 'Прикрепиться',
+    },
+    patientsPage: {
+      patientsList: 'Список пациентов',
+      findPatient: 'Введите ФИО пациента...',
+      findButton: 'Поиск',
+      diagnosis: 'Диагноз',
+      newEntries: 'Новых записей',
+      newRequests: 'Новые заявки',
+    },
+    modals: {
+      title: 'Новые заявки на прикрепление',
+      noRequests: 'Заявок нет',
     },
     errors: {
       invalidFeedback: 'Неверные имя пользователя или пароль',
