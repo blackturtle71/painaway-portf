@@ -1,0 +1,54 @@
+@use './default_variables' as *;
+
+.patients-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 75px;
+
+  .find-patient {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    max-width: 746px;
+    width: 100%;
+    justify-content: center;
+
+    .form-group {
+      margin-bottom: 0;
+      flex: 1;
+    }
+
+    .form-submit {
+      width: auto;
+    }
+  }
+}
+
+.new-requests-button {
+  position: fixed;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: 50px;
+  padding: 0.5rem 1.2rem;
+
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 1000;
+
+  &:hover:not(:disabled) {
+    background-color: $hover-color;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
