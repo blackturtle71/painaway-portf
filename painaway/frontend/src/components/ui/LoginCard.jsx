@@ -26,7 +26,7 @@ const LoginCard = ({ values }) => {
           value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={authFailed ? error : ''}
+          error={null}
           touched={formik.touched.username}
           inputRef={inputRef}
           disabled={formik.isSubmitting}
