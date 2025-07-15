@@ -10,6 +10,7 @@ import Header from './Header.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import PersonalPage from './pages/PersonalPage.jsx'
+import PatientsPage from './pages/PatientsPage.jsx'
 // import ChatPage from './pages/ChatPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import { uiRoutes } from '../routes.js'
@@ -24,19 +25,29 @@ const App = () => (
   <BrowserRouter>
     <div className="d-flex flex-column h-100">
       <Header />
-      <Routes>
-        <Route
-          path={uiRoutes.profile()}
-          element={(
-            <PrivateRoute>
-              <PersonalPage />
-            </PrivateRoute>
-          )}
-        />
-        <Route path={uiRoutes.register()} element={<RegisterPage />} />
-        <Route path={uiRoutes.login()} element={<LoginPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route
+            path={uiRoutes.profile()}
+            element={(
+              <PrivateRoute>
+                <PersonalPage />
+              </PrivateRoute>
+            )}
+          />
+          <Route
+            path={uiRoutes.patients()}
+            element={(
+              <PrivateRoute>
+                <PatientsPage />
+              </PrivateRoute>
+            )}
+          />
+          <Route path={uiRoutes.register()} element={<RegisterPage />} />
+          <Route path={uiRoutes.login()} element={<LoginPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
     </div>
   </BrowserRouter>
 )
