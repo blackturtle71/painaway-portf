@@ -1,9 +1,13 @@
 export default {
   translation: {
     name: 'Боли.Нет',
-    dairy: 'Дневник',
+    diary: 'Дневник',
     patients: 'Пациенты',
     profile: 'Личный кабинет',
+    save: 'Сохранить',
+    yes: 'Да',
+    no: 'Нет',
+    note: 'Заметка',
     alt: {
       mainNav: 'Меню пользователя',
       authControls: 'Кнопки уведомлений и выхода',
@@ -78,9 +82,39 @@ export default {
       newEntries: 'Новых записей',
       newRequests: 'Новые заявки',
     },
+    diaryPage: {
+      addNote: 'Добавить запись',
+      noteFrom: 'Запись от',
+      painDegree: 'Средняя степень боли',
+      painType: 'Тип болевых ощущений',
+      isMedicine: 'Лекарство было принято',
+    },
+    painTypes: {
+      burning: 'Жгучий',
+      stabbing: 'Колющий',
+      cutting: 'Режущий',
+      throbbing: 'Пульсирующий',
+    },
+    newNotePage: {
+      painPower: 'Сила боли',
+      painType: 'Тип боли',
+      isMedicine: 'Прием лекарства',
+    },
     modals: {
       title: 'Новые заявки на прикрепление',
       noRequests: 'Заявок нет',
+      enterDiagnisis: 'Введите диагноз...',
+      enterTreatment: 'Введите курс лечения...',
+      painPower: 'Насколько сильны болевые ощущения?',
+      painType: 'Тип болевых ощущений',
+      isMedicine: 'Вы принимали лекарство перед записью?',
+      choose: 'Выбрать...',
+      painTypes: {
+        burning: 'Жгучий',
+        stabbing: 'Колющий',
+        cutting: 'Режущий',
+        throbbing: 'Пульсирующий',
+      },
     },
     errors: {
       invalidFeedback: 'Неверные имя пользователя или пароль',
