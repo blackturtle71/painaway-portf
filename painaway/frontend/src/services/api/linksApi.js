@@ -15,10 +15,12 @@ export const linksApi = createApi({
       return headers
     },
   }),
+  tagTypes: ['Links'],
   endpoints: builder => ({
     // get all links (doctor - patient)
     getLinks: builder.query({
       query: () => apiRoutes.linksData(),
+      providesTags: ['Links'],
     }),
     getPrescriptionData: builder.query({
       query: linkId => apiRoutes.prescriptionData(linkId),
@@ -36,6 +38,7 @@ export const linksApi = createApi({
         method: 'POST',
         body: { patient_id: patientId, action },
       }),
+      invalidatesTags: ['Links'],
     }),
   }),
 })
