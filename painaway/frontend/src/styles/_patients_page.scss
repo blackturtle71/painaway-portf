@@ -52,3 +52,53 @@
     cursor: not-allowed;
   }
 }
+
+.accepted-patients {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 46px;
+  margin-top: 20px;
+  max-width: 100%;
+  padding: 0 80px;
+  justify-content: center;
+}
+
+.patient-card {
+  border: 1px solid $secondary-color;
+  border-radius: 25px;
+  padding: 16.5px 20px;
+  font-size: $secondary-font-size;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: white;
+  height: 100%;
+}
+
+.patient-info {
+  margin-bottom: 12px;
+
+  .full-name {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .sex,
+  .birthday {
+    display: block;
+    color: $secondary-color;
+    margin-bottom: 2px;
+  }
+}
+
+.patient-diagnosis {
+  .field-row {
+    margin-bottom: 8px;
+
+    label {
+      color: $secondary-color;
+      margin-right: 5px;
+    }
+  }
+}

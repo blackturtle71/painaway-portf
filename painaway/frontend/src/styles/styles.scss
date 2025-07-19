@@ -4,9 +4,15 @@
 @use './signup_page';
 @use './profile';
 @use './patients_page';
+@use './diary_page';
+@use './note_modal';
 @use './modals';
+@use './request_modal';
+@use './new_note_modal';
+@use './note_page';
 @use './input_field';
 @use './submit_button';
+@use './human';
 
 @font-face {
   font-weight: $base-font-weight;

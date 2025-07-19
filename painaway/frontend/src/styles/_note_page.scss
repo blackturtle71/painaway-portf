@@ -1,0 +1,85 @@
+@use './default_variables' as *;
+
+// === Корневой контейнер страницы ===
+.new-note-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-color;
+  box-sizing: border-box;
+  overflow: hidden; // чтобы не было прокрутки
+}
+
+// === Контейнер содержимого ===
+.new-note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 150px;
+  height: calc(100vh - 75px); // остаёмся в пределах окна
+  box-sizing: border-box;
+}
+
+// === Контейнер с человеком ===
+.new-note {
+  .human-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .human-body > svg {
+      width: 480px;
+      height: 820px;
+    }
+  }
+}
+
+
+
+// === Контейнер с текстом и кнопкой ===
+.description-container {
+  width: 614px;
+  height: 794px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+// === Заметка ===
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 100px;
+  width: 100%;
+
+  label {
+    font-weight: 500;
+    text-align: left;
+  }
+
+  textarea {
+    width: 100%;
+    height: 545px;
+    border-radius: 20px;
+    resize: none;
+    overflow-y: auto;
+    padding: 16px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// === Кнопка ===
+.description-container button {
+  width: 330px;
+  height: 50px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+

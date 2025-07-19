@@ -2,93 +2,52 @@
 
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный чёрный фон */
+  background-color: rgba(0, 0, 0, 0.5); // затемнение фона
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 1000; /* Убедись, что поверх остального контента */
+  align-items: center;
+  z-index: 999;
 }
 
 .modal-window {
   background-color: $bg-color;
-  border-radius: 8px;
-  max-width: 800px;
-  width: 90%;
+  border-radius: 10px;
   padding: 20px;
-  z-index: 1001; /* Чуть выше, чем overlay */
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    color: $secondary-color;
-    margin: 10px;
-
-    .modal-close {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border: none;
-      background-color: $bg-color;
-      cursor: pointer;
-    }
-  }
-
-  .modal-content {
-    display: flex;
-    padding: 10px 20px;
-    gap: 10px;
-  }
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-.request-card {
+.modal-header {
   display: flex;
   justify-content: space-between;
-  border: 1px solid $primary-color;
-  border-radius: $border-radius;
+  align-items: center;
+  margin-bottom: 20px;
 
-  .patient-info {
-    width: 70%;
-    padding: 10px 20px;
-    overflow-x: hidden;
-
-    .field-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    label {
-      font-weight: $base-font-weight;
-      white-space: nowrap;
-      color: $secondary-color;
-    }
-
-    span {
-      padding-right: 10px; /* добавим правый внутренний отступ для красоты */
-      overflow-x: hidden;
-
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      word-break: break-word;
-      flex: 1; // чтобы значение занимало всё оставшееся пространство
-    }
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $secondary-color;
   }
 
-  .action-buttons {
-    display: flex;
+  .modal-close {
+    background: none;
     border: none;
-    gap: 40px;
-    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .btn {
-      padding: 0;
+    img {
+      width: 24px;
+      height: 24px;
     }
   }
 }
+

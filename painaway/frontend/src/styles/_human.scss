@@ -1,0 +1,30 @@
+@use './default_variables' as *;
+
+.body__part {
+  transition: fill 0.3s ease;
+  cursor: pointer;
+
+  &.intensity-0 { fill: black; }
+  &.intensity-1 { fill: #4A89DC; }
+  &.intensity-2 { fill: #5577DB; }
+  &.intensity-3 { fill: #6186D9; }
+  &.intensity-4 { fill: #6D94D8; }
+  &.intensity-5 { fill: #7993D6; }
+  &.intensity-6 { fill: #8591D5; }
+  &.intensity-7 { fill: #918FD3; }
+  &.intensity-8 { fill: #9D8DD2; }
+  &.intensity-9 { fill: #A98BCF; }
+  &.intensity-10 { fill: #9B59B6; }
+
+  &.highlighted {
+    fill: $focus-color; // напр., #FFA726
+  }
+
+  &.active {
+    fill: $focus-color; // когда пользователь сейчас выбирает
+  }
+
+  &:hover {
+    fill: $focus-color;
+  }
+}
