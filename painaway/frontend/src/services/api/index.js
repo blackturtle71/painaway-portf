@@ -21,3 +21,10 @@ export {
   useSelectDoctorMutation,
   useRespondToLinkRequestMutation,
 } from './linksApi.js'
+export {
+  notesApi,
+  useGetBodyPartObjectQuery,
+  useGetBodyStatsQuery,
+  useSendBodyStatsMutation,
+  useUpdateBodyStatsMutation,
+} from './notesApi.js'
