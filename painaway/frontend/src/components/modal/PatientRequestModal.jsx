@@ -19,7 +19,7 @@ const PatientRequestModal = () => {
   const handleAccept = async (patientId) => {
     try {
       console.log('send patient_id', patientId)
-      await respondToLinkRequest({ patient_id: patientId, action: 'accept' }).unwrap()
+      await respondToLinkRequest({ patientId, action: 'accept' }).unwrap()
       console.log('accept')
     }
     catch (err) {
@@ -38,7 +38,7 @@ const PatientRequestModal = () => {
   }
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay request-modal">
       <div className="modal-window">
         <div className="modal-header">
           <h2 className="modal-title">{t('modals.title')}</h2>
