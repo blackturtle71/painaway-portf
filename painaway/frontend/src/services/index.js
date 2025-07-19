@@ -6,12 +6,15 @@ import { combineReducers } from 'redux'
 import authReducer from '../slices/authSlice.js'
 import chatsReducer from '../slices/chatsSlice.js'
 import profileReducer from '../slices/profileSlice.js'
+import notesReducer from '../slices/notesSlice.js'
+import bodyPartsReducer from '../slices/bodyPartsSlice.js'
 import modalsReducer from '../slices/modalsSlice.js'
 import {
   authApi,
   chatsApi,
   messagesApi,
   linksApi,
+  notesApi,
 } from './api/index.js'
 
 const authPersistConfig = {
@@ -20,17 +23,26 @@ const authPersistConfig = {
   whitelist: ['token', 'user'], // что сохраняем
 }
 
+const notePersistConfig = {
+  key: 'notesReducer',
+  storage,
+  whitelist: ['notes', 'noteText'],
+}
+
 const rootReducer = combineReducers({
   // оборачиваем authReduce, чтобы при каждом setCredentials данные сохранялись в localStorage
   // и при старте redux-persist восстанавливал токен из localStorage в redux-стейт
   authReducer: persistReducer(authPersistConfig, authReducer),
   chatsReducer,
   profileReducer,
+  notesReducer: persistReducer(notePersistConfig, notesReducer),
+  bodyPartsReducer,
   modalsReducer,
   [authApi.reducerPath]: authApi.reducer,
   [chatsApi.reducerPath]: chatsApi.reducer,
   [messagesApi.reducerPath]: messagesApi.reducer,
   [linksApi.reducerPath]: linksApi.reducer,
+  [notesApi.reducerPath]: notesApi.reducer,
 })
 
 const store = configureStore({
@@ -42,6 +54,7 @@ const store = configureStore({
     chatsApi.middleware,
     messagesApi.middleware,
     linksApi.middleware,
+    notesApi.middleware,
   ),
 })
 
