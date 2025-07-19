@@ -1,20 +1,26 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { clearLocalStorage } from '../slices/authSlice'
+import { clearNotes } from '../slices/notesSlice'
 import { useTranslation } from 'react-i18next'
 import Logo from '../assets/images/Logo.png'
 import bell from '../assets/images/Notifications.png'
 import Navigation from './ui/Navigation'
 import { uiRoutes } from '../routes'
-import { authApi } from '../services/api'
+import { authApi, notesApi } from '../services/api'
+import { useNavigate } from 'react-router-dom'
 
 const AuthButton = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const token = useSelector(state => state.authReducer.token)
 
   const handleLogOut = () => {
     dispatch(clearLocalStorage())
     dispatch(authApi.util.invalidateTags(['Profile']))
+    dispatch(notesApi.util.resetApiState())
+    dispatch(clearNotes())
+    navigate(uiRoutes.login)
   }
 
   const handleOpenNotification = () => {
@@ -48,7 +54,7 @@ const Header = () => {
         { to: uiRoutes.profile(), label: t('profile') },
       ]
     : [
-        { to: uiRoutes.dairy(), label: t('dairy') },
+        { to: uiRoutes.diary(), label: t('diary') },
         { to: uiRoutes.profile(), label: t('profile') },
       ]
 
