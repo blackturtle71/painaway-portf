@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux'
 import getModalComponent from './index.js'
 
 const Modal = () => {
-  const modalType = useSelector(state => state.modalsReducer.modals.type)
+  const { isShown, type } = useSelector(state => state.modalsReducer.modals)
 
-  if (modalType === '') {
+  if (!isShown || type === '') {
     return null
   }
-  const ModalComponent = getModalComponent(modalType)
+  const ModalComponent = getModalComponent(type)
   return <ModalComponent />
 }
 
