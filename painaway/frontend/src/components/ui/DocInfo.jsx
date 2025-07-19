@@ -13,7 +13,13 @@ const DocInfo = (props) => {
             {t('profilePage.doctor')}
             :
           </dt>
-          <dd className="filed-label">{doctor}</dd>
+          <dd className="filed-label">
+            {doctor.last_name}
+            {' '}
+            {doctor.first_name}
+            {' '}
+            {doctor.father_name}
+          </dd>
         </div>
       </dl>
 
