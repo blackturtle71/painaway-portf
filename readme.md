@@ -70,9 +70,10 @@ Routes:
 - notes/ - ~~GET will send a list of notes the user has; POST will allow creating a note, just send {"title": "some title", "body": "some text"} (title is required); PATCH will allow to alter title and body of the note (specified by pk, so you must send {"note_pk":\<int:pk>, \<title or body or both>}; DELETE will delete the note by pk {"note_pk": \<int:pk>}~~ REMOVED
 - link_doc/ - POST, available only for Patient group. You send {'doc_username': \<str:username>} and it will send a request for linking to the specified doctor. Status will be auto set to "pending"; DELETE, you send {'doc_username': \<str:username>} and the request for this doc gets deleted (handy if the link was rejected, user just deletes it)
 - doc_respond/ - POST, available only for Doctor group. You send {'patient_id': \<int:user.id>, 'action':\<'accept' or 'reject'>}. Accept or reject the linking proccess (note that the link exists anyway, but based on its status the doc can see patient's data)
-- list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/)
+- list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/), also returns the prescription and diagnosis linked to the link
 - bodyparts/ - GET will send you all the BodyPart objects in the db (must be 44), you need it to extract pks
-- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "tookPrescription":True, "description": "fell on my scissors} (first four fields are required, "description" is not; tookPrescription is False by default), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient
+- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "tookPrescription":True, "description": "fell on my scissors} (first four fields are required, "description" is not; tookPrescription is False by default), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient\
+NOTE: prescription and diagnosis are in OneToOne realtionship with the link, that is, there can only be one prescription and one diagnosis per link
 - prescription/?link_id=\<int:link.id> - GET, Patient and Doctor can send. You just pass the id of the link into query parameters and voila, you get the list of available prescriptions; POST, only Doctor can send data, you send the data like so {"link": link_id, "prescription": 'Anti-stubby', 'details': 'some details'} and a new prescription will be created (works only if the link.status == 'accepted'), and yes, you send link_id in both query parameters and json
 - prescription/?prescription_id=\<int:prescription.id> - PATCH, only Doctor can send data, you can alter 'prescription' and 'details' fields; DELETE, only Doctor can send data, just send the id in query parameters and the presription will be deleted
 - diagnosis/?link_id=\<int:link.id> - same as prescription/?link_id=\<int:link.id>, just swap word 'prescription' with 'diagnosis'
@@ -107,9 +108,9 @@ Example of notification:\
 - Deal with notifications
     - ~~Create notification model~~
     - ~~Create notification view~~
-    - Add notification creation during:
-        - link request
-        - new body stat from patient
-        - new prescription from doc
-        - new diagnosis from doc
+    - ~~Add notification creation during:~~
+        - ~~link request~~
+        - ~~new body stat from patient~~
+        - ~~new prescription from doc~~
+        - ~~new diagnosis from doc~~
     - Create autotests

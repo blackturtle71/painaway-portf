@@ -36,14 +36,6 @@ class BodyStatsSerializer(serializers.ModelSerializer):
         instance.last_modified = datetime.now() # auto update timestamp
         return super().update(instance, validated_data)
 
-class PatientDoctorLinkSerializer(serializers.ModelSerializer):
-    patient = UserSerializer()
-    doctor = UserSerializer()
-
-    class Meta:
-        model = PatientDoctorLink
-        fields = ['id', 'patient', 'doctor', 'status', 'created_at']
-
 class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription
@@ -60,3 +52,14 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = '__all__'
         read_only_fields = ['id', 'created_at']
+
+
+class PatientDoctorLinkSerializer(serializers.ModelSerializer):
+    patient = UserSerializer()
+    doctor = UserSerializer()
+    prescription = PrescriptionSerializer()
+    diagnosis = DiagnosisSerializer()
+
+    class Meta:
+        model = PatientDoctorLink
+        fields = ['id', 'patient', 'doctor', 'status', 'prescription', 'diagnosis', 'created_at']
