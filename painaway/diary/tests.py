@@ -262,7 +262,8 @@ class BodyStatsViewTests(BaseAPITestCase):
             'body_part': self.part.id,
             'pain_type': 'burning',
             'intensity': 5,
-            'description': 'Sharp pain'
+            'description': 'Sharp pain',
+            'tookPrescription': True
         }
 
         self.invalid_data = {
@@ -276,8 +277,9 @@ class BodyStatsViewTests(BaseAPITestCase):
         response = self.client.post(reverse('stats-view'), self.valid_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['pain_type'], 'burning')
+        self.assertEqual(response.data['tookPrescription'], True)
 
-    def test_create_bodystats(self):
+    def test_create_wrong_bodystats(self):
         response = self.client.post(reverse('stats-view'), self.invalid_data)
         self.assertEqual(response.status_code, 400)
     

@@ -15,6 +15,7 @@ class BodyStats(models.Model):
     pain_type = models.CharField(max_length=10)
     intensity = models.IntegerField()
     description = models.TextField(blank=True, default="")
+    tookPrescription = models.BooleanField(default=False)
     date_recorded = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -59,3 +60,15 @@ class Diagnosis(models.Model):
 
     def __str__(self):
         return f"Patient {self.link.patient} has {self.diagnosis}; diagnosed by doctor {self.link.doctor}"
+    
+class Notification(models.Model):
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.owner.username} --- {self.message[:30]}..."

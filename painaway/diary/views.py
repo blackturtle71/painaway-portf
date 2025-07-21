@@ -2,10 +2,11 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
-from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis
-from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer, PrescriptionSerializer, DiagnosisSerializer
+from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis, Notification
+from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer, PrescriptionSerializer, DiagnosisSerializer, NotificationSerializer
 from .permissions import IsPatientOrLinkedDoc, IsDoctor
 from authentication.models import CustomUser
+from .utils import create_notification
 
 class BodyPartsView(APIView):
     def get(self, request):
@@ -37,9 +38,17 @@ class BodyStatsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
+        user = request.user
         serializer = BodyStatsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
+
+            active_links = PatientDoctorLink.objects.filter(
+                patient=user, status="accepted"
+            ).select_related('doctor') # select related does some SQL optimization
+            for link in active_links:
+                create_notification(user=link.doctor, message=f"Новая запись от {user.full_name}")
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -82,6 +91,7 @@ class SendDoctorRequestView(APIView):
             if not created:
                 return Response({'error': 'Request already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
+            create_notification(user=doc, message=f'Новый запрос на прикрепление от {request.user.full_name}')
             return Response({'detail': "Request sent"}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -105,7 +115,9 @@ class RespondToPatientRequestView(APIView):
             link = PatientDoctorLink.objects.get(patient__id=patient_id, doctor=request.user)
             if action == 'accept':
                 link.status = 'accepted'
+                create_notification(user=link.patient, message=f"Доктор {request.user.full_name} принял заявку.")
             elif action == 'reject':
+                create_notification(user=link.patient, message=f"Доктор {request.user.full_name} отклонил заявку.")
                 link.status = 'rejected'
             else:
                 return Response({'error': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -157,6 +169,7 @@ class PrescriptionView(APIView):
                 serializer = PrescriptionSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save(link=link)
+                    create_notification(user=link.patient, message=f"Доступны новые рекомендации по лечению.")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors, status=400)
             else:
@@ -175,6 +188,7 @@ class PrescriptionView(APIView):
                 serializer = PrescriptionSerializer(prescription, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
+                    create_notification(user=prescription.link.patient, message=f"Доктор изменил ваши рекомендации по лечению.")
                     return Response(serializer.data, status=200)
                 return Response(serializer.errors, status=400)
             return Response({"error": "Not authorized to edit this prescription."}, status=403)
@@ -206,7 +220,7 @@ class DiagnosisView(APIView):
             link = PatientDoctorLink.objects.get(Q(patient=user, id=link_id) | Q(doctor=user, id=link_id))
             if link.status == 'accepted':
                 diagnosis = Diagnosis.objects.filter(link=link)
-                serializer = self.serializer_class(diagnosis, many=True)
+                serializer = self.serializer_class(diagnosis, many=True)                    
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "link not accepted"}, status=403)
@@ -224,6 +238,7 @@ class DiagnosisView(APIView):
                 serializer = DiagnosisSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save(link=link)
+                    create_notification(user=link.patient, message=f"Доктор {link.doctor.full_name} поставил новый диагноз.")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors, status=400)
             else:
@@ -242,6 +257,7 @@ class DiagnosisView(APIView):
                 serializer = DiagnosisSerializer(diagnosis, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
+                    create_notification(user=diagnosis.patient, message=f"Доктор {diagnosis.doctor.full_name} изменил ваш диагноз.")
                     return Response(serializer.data, status=200)
                 return Response(serializer.errors, status=400)
             return Response({"error": "Not authorized to edit this diagnosis."}, status=403)
@@ -261,4 +277,43 @@ class DiagnosisView(APIView):
         except Diagnosis.DoesNotExist:
             return Response({'error': 'diagnosis not found'}, status=404)
 
+class NotificationView(APIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        notifications = Notification.objects.filter(owner=request.user).order_by('-created_at')
+        serializer = self.serializer_class(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        notifiction_id = request.query_params.get("notifiction_id")
+        try:
+            notification = Notification.objects.get(id=notifiction_id)
+            if notification.owner != request.user:
+                return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
+
+            notification.is_read = True
+            notification.save()
+            return Response({"detail": "marked as read"}, status=200)
+        except Notification.DoesNotExist:
+            return Response({'error': 'notification not found'}, status=404)
+    
+    def delete(self, request):
+        notifiction_id = request.query_params.get("notifiction_id")
+        try:
+            notification = Notification.objects.get(id=notifiction_id)
+            if notification.owner != request.user:
+                return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
+
+            notification.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Notification.DoesNotExist:
+            return Response({'error': 'notification not found'}, status=404)
         
+class UnreadNotificationCountView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        count = Notification.objects.filter(owner=request.user, is_read=False).count()
+        return Response({"unread_count": count})

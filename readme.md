@@ -72,13 +72,44 @@ Routes:
 - doc_respond/ - POST, available only for Doctor group. You send {'patient_id': \<int:user.id>, 'action':\<'accept' or 'reject'>}. Accept or reject the linking proccess (note that the link exists anyway, but based on its status the doc can see patient's data)
 - list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/)
 - bodyparts/ - GET will send you all the BodyPart objects in the db (must be 44), you need it to extract pks
-- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "description": "fell on my scissors"} (first three fields are required, "description" is not), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient
+- stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "tookPrescription":True, "description": "fell on my scissors} (first four fields are required, "description" is not; tookPrescription is False by default), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient
 - prescription/?link_id=\<int:link.id> - GET, Patient and Doctor can send. You just pass the id of the link into query parameters and voila, you get the list of available prescriptions; POST, only Doctor can send data, you send the data like so {"link": link_id, "prescription": 'Anti-stubby', 'details': 'some details'} and a new prescription will be created (works only if the link.status == 'accepted'), and yes, you send link_id in both query parameters and json
 - prescription/?prescription_id=\<int:prescription.id> - PATCH, only Doctor can send data, you can alter 'prescription' and 'details' fields; DELETE, only Doctor can send data, just send the id in query parameters and the presription will be deleted
 - diagnosis/?link_id=\<int:link.id> - same as prescription/?link_id=\<int:link.id>, just swap word 'prescription' with 'diagnosis'
 - diagnosis/?diagnosis_id=\<int:diagnosis.id> - same as prescription/?prescription_id=\<int:prescription.id>, just swap word 'prescription' with 'diagnosis'
+- notifications/ - GET will send all the notificaations of the current user (sorted by time of creation, descending); PATCH, send {"notification_id": \<int:notification.id>} to mark this notification as read; DELETE, send {"notification_id": \<int:notification.id>} to delete the notification
+
+Example of notification:\
+{\
+    "id": 1,\
+    "owner": {\
+        "id": 2,\
+        "username": "newuser",\
+        "email": "AFstADA9@example.com",\
+        "first_name": "Mike",\
+        "father_name": "Sarkesian",\
+        "last_name": "Wazowski",\
+        "sex": "M",\
+        "date_of_birth": "2022-01-01",\
+        "groups": ["Doctor"]
+    },\
+    "message": "Новый запрос на прикрепление от Sarah Connor", #messages are hardcoded, you can't change them\
+    "is_read": false,\
+    "created_at": "2025-07-21T15:07:05.470890Z"\
+}
+
+- notifications/unread-count/ - that's a dangerous one. GET will send you the number of unread notifictions for the current user. Howeeeever, we'd better setup some caching or we might clog up the db. And here's the thing, I'm not deploying the site, so I don't know what they'd like me to do with the caching, so, I'll skip it for now.
+
 
 # TODO Backend:
 - ~~Add relations (and restrictions) between Patient and Doctor groups~~
 - Add timeout (with autodeletion) for rejected links?
 - Deal with notifications
+    - ~~Create notification model~~
+    - ~~Create notification view~~
+    - Add notification creation during:
+        - link request
+        - new body stat from patient
+        - new prescription from doc
+        - new diagnosis from doc
+    - Create autotests
