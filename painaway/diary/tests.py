@@ -152,6 +152,15 @@ class PrescriptionTests(BaseAPITestCase):
         response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['prescription'], 'Anti-stubby')
+
+    def test_add_multi_prescription(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+        data2 = {"link": link_id, "prescription": 'Anti-stubby2'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data2)
+        self.assertEqual(response.status_code, 400)
     
     def test_add_wrong_prescription(self):
         link_id = self.create_link()
@@ -211,6 +220,15 @@ class DiagnosisTests(BaseAPITestCase):
         response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['diagnosis'], 'DumbFuck')
+
+    def test_add_multi_diagnosis(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        data2 = {"link": link_id, "diagnosis": 'EvenDumberFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data2)
+        self.assertEqual(response.status_code, 400)
     
     def test_add_wrong_diagnosis(self):
         link_id = self.create_link()
