@@ -46,7 +46,7 @@ class PatientDoctorLink(models.Model):
         return f"Link between patient {self.patient} and doctor {self.doctor} | [{self.status}]"
     
 class Prescription(models.Model):
-    link = models.ForeignKey(PatientDoctorLink, on_delete=models.CASCADE, related_name='prescription_link')
+    link = models.OneToOneField(PatientDoctorLink, on_delete=models.CASCADE, related_name='prescription')
     prescription = models.CharField(max_length=50, null=False)
     details = models.TextField(blank=True)
 
@@ -54,7 +54,7 @@ class Prescription(models.Model):
         return f"{self.prescription} for patient {self.link.patient} from doctor {self.link.doctor}"
 
 class Diagnosis(models.Model):
-    link = models.ForeignKey(PatientDoctorLink, on_delete=models.CASCADE, related_name='diagnosis_link')
+    link = models.OneToOneField(PatientDoctorLink, on_delete=models.CASCADE, related_name='diagnosis')
     diagnosis = models.CharField(max_length=50, null=False)
     details = models.TextField(blank=True)
 
