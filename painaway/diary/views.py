@@ -257,7 +257,7 @@ class DiagnosisView(APIView):
                 serializer = DiagnosisSerializer(diagnosis, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    create_notification(user=diagnosis.patient, message=f"Доктор {diagnosis.doctor.full_name} изменил ваш диагноз.")
+                    create_notification(user=diagnosis.link.patient, message=f"Доктор {diagnosis.link.doctor.full_name} изменил ваш диагноз.")
                     return Response(serializer.data, status=200)
                 return Response(serializer.errors, status=400)
             return Response({"error": "Not authorized to edit this diagnosis."}, status=403)
