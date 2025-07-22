@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # run migrations
+python manage.py makemigrations
 python manage.py migrate
 
 # autopopulate db with BodyPart objects
