@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+USE_SQLITE = os.getenv("USE_SQLITE", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -44,7 +44,7 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         'TIMEOUT': 60*15, # keep cache for 15 mins
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -53,8 +53,8 @@ CACHES = {
 }
 # celery stuff
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0' 
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0' 
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -121,7 +121,7 @@ ASGI_APPLICATION = 'painaway.asgi.application'
 
 # Channel layer configuration
 
-if DEVELOPMENT_MODE:
+if DEBUG:
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels.layers.InMemoryChannelLayer",
@@ -132,7 +132,7 @@ else:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": 'redis://localhost:6379/2',
+                "hosts": ['redis://redis:6379/2'],
             },
         },
     }
@@ -141,7 +141,7 @@ else:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 # switch to Postgresql
 
-if DEVELOPMENT_MODE is True:
+if USE_SQLITE is True:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",

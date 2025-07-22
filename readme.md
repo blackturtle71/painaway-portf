@@ -1,25 +1,23 @@
 Basic route for api apps is: http://localhost:8000/api/{app_name}/{the rest of the URL} (exception: websocket, I pasted the full route).
 
-Gotta switch to Postgresql, and probably try putting all that inside a docker container.
 
 # backend setup
 
-- python -m venv .venv
-- source .venv/bin/activate
-- git clone the repo
-- pip install -r requirements
-- python manage.py makemigrations authentication
-- python manage.py makemigrations chat
-- python manage.py makemigrations diary
-- python manage.py migrate
-- python manage.py createsuperuser
-- python manage.py runserver
+- first of all install docker-compose
+- cd into painway (same level as manage.py)
+- `docker-compose up -d` this one will install and run everything you need and then detach from the terminal
+
+The backend is ready for use.
+
+- when you need to stop it run `docker-compose stop`
+- when you need to start it again run `docker-compose start`
 
 # setup after updates
 
-If new app has been created than you must run these commands
-- python manage.py makemigrations {app_name}
-- python manage.py migrate
+- `docker-compose down -v` deletes the old container and it's data (including the db)
+- `docker-compose up -d`
+
+We technicaly don't need to nuke the container to setup the updates for the backend, but I'd rather nuke it than deal with possible errors.
 
 # Glossary
 
@@ -115,4 +113,5 @@ Example of notification:\
         - ~~new diagnosis from doc~~
     - ~~Create autotests~~
     - ~~add caching for notifications/unread-count/~~
-- Set up Docker
+- ~~Set up Docker~~
+- Switch to Postgresql?

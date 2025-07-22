@@ -7,9 +7,16 @@ from .models import BodyStats, BodyPart, Notification
 from rest_framework.authtoken.models import Token
 from django.core.cache import cache
 from django.test import override_settings
+from django_redis import get_redis_connection
 import time
 
 class BaseAPITestCase(APITestCase):
+    # this thing allows us to connect to redis during testing
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        get_redis_connection("default").flushall()
+
     def setUp(self):
         self.user = CustomUser.objects.create_user(username='testuser', password='testpass', email='g@g.com')
         self.token = Token.objects.create(user=self.user)
@@ -467,8 +474,8 @@ class NotificationTests(BaseAPITestCase):
     @override_settings(CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "TIMEOUT": 1,
+        "LOCATION": "redis://redis:6379/1",
+        'TIMEOUT': 1,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
