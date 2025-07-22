@@ -3,9 +3,11 @@ from rest_framework import status
 from django.urls import reverse
 from authentication.models import CustomUser
 from django.contrib.auth.models import Group
-from .models import BodyStats, BodyPart
+from .models import BodyStats, BodyPart, Notification
 from rest_framework.authtoken.models import Token
-from datetime import datetime
+from django.core.cache import cache
+from django.test import override_settings
+import time
 
 class BaseAPITestCase(APITestCase):
     def setUp(self):
@@ -18,6 +20,9 @@ class BaseAPITestCase(APITestCase):
         self.doc_token = Token.objects.create(user=self.doc)
         self.doc.groups.set([Group.objects.get(name='Doctor')])
         self.doc_id = self.doc.id
+
+    def tearDown(self):
+        cache.clear()
     
     def auth_doc(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.doc_token.key)
@@ -416,3 +421,73 @@ class NotificationTests(BaseAPITestCase):
         self.auth_patient()
         response = self.client.get(reverse('notifications'))
         self.assertEqual(len(response.data), 2) # 1 diagnosis + 1 link
+
+    def test_unread_count_caching(self):
+        Notification.objects.create(owner=self.user, message="Test", is_read=False)
+
+        with self.assertNumQueries(2): # first request has no cache and hits the db for auth and count
+            response = self.client.get(reverse('unread-count'))
+            self.assertEqual(response.data['unread_count'], 1)
+
+        with self.assertNumQueries(1): # second request has the cache, so hits the db only for auth
+            response = self.client.get(reverse('unread-count'))
+            self.assertEqual(response.data['unread_count'], 1)
+
+        # check the cache itself
+        self.assertEqual(cache.get(f"user_{self.user.id}_unread_notification_count"), 1)
+    
+    def test_signal_cache_invalidation_on_create(self):
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.json()['unread_count'], 0)
+
+        # invalidating cache
+        Notification.objects.create(owner=self.user, message="Test", is_read=False)
+
+        # check if the cache is none cuz of invalidation 
+        self.assertEqual(cache.get(f"user_{self.user.id}_unread_notification_count"), None)
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.json()['unread_count'], 1)
+
+    def test_signal_cache_invalidation_on_delete(self):
+        notification = Notification.objects.create(
+            owner=self.user, 
+            message="Test", 
+            is_read=False
+        )
+
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.json()['unread_count'], 1)
+
+        notification.delete()
+
+        self.assertEqual(cache.get(f"user_{self.user.id}_unread_notification_count"), None)
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.json()['unread_count'], 0)
+
+    @override_settings(CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "TIMEOUT": 1,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    })
+    def test_cache_expiration(self):
+        Notification.objects.create(owner=self.user, message="Test", is_read=False)
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.json()['unread_count'], 1)
+
+        # Immediate request - uses cache
+        with self.assertNumQueries(1): # auth hit
+            response = self.client.get(reverse('unread-count'))
+            self.assertEqual(response.json()['unread_count'], 1)
+
+        # Wait for cache to expire
+        time.sleep(1.5)
+
+        # Should hit database again
+        with self.assertNumQueries(2): # auth + count hit
+            response = self.client.get(reverse('unread-count'))
+            self.assertEqual(response.json()['unread_count'], 1)

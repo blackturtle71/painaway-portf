@@ -104,8 +104,8 @@ Example of notification:\
 
 # TODO Backend:
 - ~~Add relations (and restrictions) between Patient and Doctor groups~~
-- Add timeout (with autodeletion) for rejected links? (celery + redis + docker)
-- Deal with notifications
+- ~~Add timeout (with autodeletion) for rejected links? (celery + redis + docker)~~
+- ~~Deal with notifications~~
     - ~~Create notification model~~
     - ~~Create notification view~~
     - ~~Add notification creation during:~~
@@ -114,4 +114,5 @@ Example of notification:\
         - ~~new prescription from doc~~
         - ~~new diagnosis from doc~~
     - ~~Create autotests~~
-    - add caching for notifications/unread-count/
+    - ~~add caching for notifications/unread-count/~~
+- Set up Docker

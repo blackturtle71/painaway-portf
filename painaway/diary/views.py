@@ -2,6 +2,7 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
+from django.core.cache import cache
 from .models import BodyStats, BodyPart, PatientDoctorLink, Prescription, Diagnosis, Notification
 from .serializers import BodyStatsSerializer, BodyPartSerializer, PatientDoctorLinkSerializer, PrescriptionSerializer, DiagnosisSerializer, NotificationSerializer
 from .permissions import IsPatientOrLinkedDoc, IsDoctor
@@ -314,6 +315,17 @@ class NotificationView(APIView):
 class UnreadNotificationCountView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
+    def get_cache_key(self, user):
+        return f"user_{user.id}_unread_notification_count"
+    
     def get(self, request):
-        count = Notification.objects.filter(owner=request.user, is_read=False).count()
+        cache_key = self.get_cache_key(request.user)
+        count = cache.get(cache_key)
+
+        if count is None:
+            count = self.calculate_unread_count(request.user)
+            cache.set(cache_key, count)
         return Response({"unread_count": count})
+    
+    def calculate_unread_count(self, user):
+        return Notification.objects.filter(owner=user, is_read=False).count()
