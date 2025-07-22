@@ -258,7 +258,7 @@ class DiagnosisTests(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['diagnosis'], 'Retarded')
 
-    def test_delete_prescription(self):
+    def test_delete_diagnosis(self):
         link_id = self.create_link()
         self.auth_doc()
         data = {"link": link_id, "diagnosis": 'FumbDuck'}
@@ -350,3 +350,69 @@ class BodyPartsViewTests(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], 'Head')
+
+class NotificationTests(BaseAPITestCase):
+    def setUp(self):
+        super().setUp()
+        self.part = BodyPart.objects.create(name='Arm', translation='Arm')
+        self.valid_data = {
+            'body_part': self.part.id,
+            'pain_type': 'burning',
+            'intensity': 5,
+            'description': 'Sharp pain',
+            'tookPrescription': True
+        }
+
+    def test_link_notifications(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        response = self.client.post(url, data)
+
+
+        self.auth_doc()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 1)
+        url = reverse('doc-respond')
+        data = {'patient_id': self.patient_id, 'action': 'accept'}
+        response = self.client.post(url, data)
+        self.auth_patient()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 1)
+    
+    def test_bodystats_notifications(self):
+        url = reverse('link-doc')
+        data = {'doc_username': "doc"}
+        response = self.client.post(url, data)
+
+        self.auth_doc()
+        url = reverse('doc-respond')
+        data = {'patient_id': self.patient_id, 'action': 'accept'}
+        response = self.client.post(url, data)
+
+        self.auth_patient()
+        response = self.client.post(reverse('stats-view'), self.valid_data)
+        response = self.client.post(reverse('stats-view'), self.valid_data)
+        response = self.client.post(reverse('stats-view'), self.valid_data)
+        self.auth_doc()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 4) # 3 stats + 1 link
+
+    def test_prescription_notifications(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "prescription": 'Anti-stubby'}
+        response = self.client.post(reverse('prescription-view') + f"?link_id={link_id}", data)
+
+        self.auth_patient()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 2) # 1 prescription + 1 link
+    
+    def test_diagnosis_notifications(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+
+        self.auth_patient()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 2) # 1 diagnosis + 1 link
