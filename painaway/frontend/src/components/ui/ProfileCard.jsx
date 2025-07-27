@@ -24,7 +24,7 @@ const profileCard = (props) => {
           {t('profilePage.sex')}
           :
         </dt>
-        <dd className="field-value">{profileData.sex}</dd>
+        <dd className="field-value">{t(`form.gender.${profileData.sex}`)}</dd>
 
         <dt className="field-label">
           {t('profilePage.birthday')}
