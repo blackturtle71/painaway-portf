@@ -4,6 +4,7 @@ import { uiRoutes } from '../../routes'
 import { useGetBodyStatsQuery } from '../../services/api'
 import { useDispatch } from 'react-redux'
 import { openModal, setCurrentNote } from '../../slices/modalsSlice'
+import { formatDateTime } from '../../helpers/dateUtils.js'
 import Modal from '../modal/Modal'
 
 const DiaryPage = () => {
@@ -32,7 +33,7 @@ const DiaryPage = () => {
             className="note-card"
             onClick={() => handleOpenNoteClick(note)}
           >
-            <div className="note-title">{t('diaryPage.noteFrom')}</div>
+            <div className="note-title">{`${t('diaryPage.noteFrom')} ${formatDateTime(note.date_recorded)}`}</div>
             <div className="note-content">
               <div className="field-row">
                 <span className="field">
@@ -53,7 +54,7 @@ const DiaryPage = () => {
                   {t('diaryPage.isMedicine')}
                   {': '}
                 </span>
-                <span className="value">Да/Нет</span>
+                <span className="value">{t(`${note.tookPrescription}`)}</span>
               </div>
             </div>
           </div>
