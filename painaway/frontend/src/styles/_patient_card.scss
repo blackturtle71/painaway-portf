@@ -1,0 +1,168 @@
+@use './default_variables' as *;
+
+.patient-records {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 100px;
+}
+
+/* Блок с информацией о пациенте */
+.patient-info {
+  width: 100%;
+
+  .field-row {
+    display: flex;
+    gap: 15px;
+
+    .field {
+      color: $secondary-color;
+    }
+
+    .change {
+      cursor: pointer;
+      font-size: $secondary-font-size;
+      color: $secondary-color;
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Контейнер для динамики боли и записей */
+.pain-info-container {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+
+  .dynamics-pain {
+    width: 40%;
+    flex-shrink: 0;
+  }
+
+  .records-container {
+    width: 60%;
+  }
+}
+
+/* Динамика боли */
+.dynamics-pain {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &-title {
+    font-size: $secondary-font-size;
+    color: $secondary-color;
+    text-align: left;
+  }
+
+  .dynamic-pain-graph {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    border: 1px solid $primary-color;
+    border-radius: $border-radius;
+  }
+}
+
+/* График боли */
+.pain-intensity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+
+  .date {
+    text-align: right;
+    font-size: 14px;
+    color: $secondary-color;
+    min-width: 50px;
+    flex-shrink: 0;
+  }
+
+  .intensity-scale {
+    position: relative;
+    flex: 1;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .pain-level {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+  }
+
+  .pain-scale-numbers {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: $secondary-color;
+    margin-top: 2px;
+  }
+}
+
+/* Цвета интенсивности */
+@each $level, $color in $intensity-colors {
+  .pain-level.intensity-#{$level} {
+    background-color: #{$color};
+  }
+}
+
+/* Список записей */
+.records-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 150px;
+
+  .records-title {
+    font-size: $secondary-font-size;
+    color: $secondary-color;
+    text-align: left;
+  }
+
+  .mini-record {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid $primary-color;
+    border-radius: $border-radius;
+    background-color: $bg-color;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.3s ease;
+
+    .date-record {
+      text-align: right;
+      color: $secondary-color;
+      margin-bottom: 10px;
+    }
+
+    .info-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateX(10px) translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Поле приема лекарства */
+.isMedicine .field {
+  color: $secondary-color;
+}

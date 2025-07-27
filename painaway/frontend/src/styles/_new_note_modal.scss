@@ -8,6 +8,14 @@
   }
 }
 
+.new-note-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;   // чтобы занял всю высоту родителя
+}
+
 .pain-form {
   display: flex;
   flex-direction: column;

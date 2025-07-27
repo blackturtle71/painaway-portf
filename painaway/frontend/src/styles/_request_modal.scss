@@ -1,6 +1,5 @@
 @use './default_variables' as *;
 
-// Специфичная модалка
 .request-modal {
   .modal-window {
     max-width: 800px;
@@ -17,19 +16,36 @@
 
 .request-card {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   border: 1px solid $primary-color;
   border-radius: $border-radius;
+  width: 100%;
 
-  .patient-info {
+  &.editing {
+    flex-direction: column;
+    gap: 15px;
+
+    .edit-section {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 20px;
+    }
+  }
+
+  .request-patient-info {
     width: 70%;
     padding: 10px 20px;
     overflow-x: hidden;
+    gap: 5px;
 
     .field-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 8px;
+
+      span {
+        color: $primary-color;
+      }
     }
 
     label {
