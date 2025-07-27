@@ -3,16 +3,21 @@ export const apiBase = '/api/'
 export const apiRoutes = {
   register: () => 'auth/register/',
   login: () => 'auth/login/',
+  profileData: () => 'auth/profile/',
+
   chats: () => '/chat/conversations/',
   chatWith: id => `/chat/conversations/${id}/`,
   deleteMessagesWith: peerId => `/chat/conversations/delete/${peerId}/`,
-  profileData: () => 'auth/profile/',
+
   linksData: () => '/diary/list_links/',
   diagnosisData: linkId => `/diary/diagnosis/?link_id=${linkId}`,
+  diagnosisById: diagnosisId => `/diary/diagnosis/?diagnosis_id=${diagnosisId}`,
   prescriptionData: linkId => `/diary/prescription/?link_id=${linkId}`,
+  prescriptionById: prescriptionId => `/diary/prescription/?prescription_id=${prescriptionId}`,
   selectDoctor: () => '/diary/link_doc/',
   respondToLinkRequest: () => 'diary/doc_respond/',
   bodyStats: () => 'diary/stats/',
+  patientRecords: patientId => `/diary/stats/?patient_id=${patientId}`,
   bodyPartObjects: () => 'diary/bodyparts/',
 }
 
@@ -23,6 +28,7 @@ export const uiRoutes = {
   diary: () => '/diary',
   newNote: () => '/diary/new_record',
   patients: () => '/patients',
+  patientCard: patientId => `/patient_card/${patientId}`,
   profile: () => '/profile',
   chats: () => '/chat/conversations',
 }
