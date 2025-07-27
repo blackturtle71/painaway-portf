@@ -74,28 +74,39 @@
   justify-content: space-between;
   background-color: white;
   height: 100%;
+  gap: 15px;
+
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateX(10px) translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .patient-info {
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 
   .full-name {
-    display: block;
-    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
   }
 
-  .sex,
   .birthday {
     display: block;
     color: $secondary-color;
-    margin-bottom: 2px;
   }
 }
 
 .patient-diagnosis {
-  .field-row {
-    margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 
+  .field-row {
     label {
       color: $secondary-color;
       margin-right: 5px;

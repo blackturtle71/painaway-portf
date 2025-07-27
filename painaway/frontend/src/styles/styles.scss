@@ -13,6 +13,8 @@
 @use './input_field';
 @use './submit_button';
 @use './human';
+@use './patient_card';
+@use './change_modal';
 
 @font-face {
   font-weight: $base-font-weight;
