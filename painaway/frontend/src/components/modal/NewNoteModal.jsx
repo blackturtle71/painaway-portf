@@ -63,7 +63,7 @@ const NewNoteModal = () => {
             <img src={CloseIcon} alt={t('alt.closeModal')} />
           </button>
         </div>
-        <div className="modal-content">
+        <div className="new-note-modal-content">
           <form onSubmit={handleSubmit} className="pain-form">
             <fieldset>
               <legend>{t('modals.painPower')}</legend>
@@ -93,10 +93,10 @@ const NewNoteModal = () => {
                 onChange={e => setPainType(e.target.value)}
               >
                 <option value="">{t('modals.choose')}</option>
-                <option value="burning">{t('modals.painTypes.burning')}</option>
-                <option value="stabbing">{t('modals.painTypes.stabbing')}</option>
-                <option value="cutting">{t('modals.painTypes.cutting')}</option>
-                <option value="throbbing">{t('modals.painTypes.throbbing')}</option>
+                <option value="burning">{t('painTypes.burning')}</option>
+                <option value="stabbing">{t('painTypes.stabbing')}</option>
+                <option value="cutting">{t('painTypes.cutting')}</option>
+                <option value="throbbing">{t('painTypes.throbbing')}</option>
               </select>
             </fieldset>
 
@@ -111,7 +111,7 @@ const NewNoteModal = () => {
                     checked={medicine === true}
                     onChange={() => setMedicine(true)}
                   />
-                  {t('yes')}
+                  {t('true')}
                 </label>
                 <label className={`toggle-radio-button ${medicine === false ? 'active' : ''}`}>
                   <input
@@ -121,7 +121,7 @@ const NewNoteModal = () => {
                     checked={medicine === false}
                     onChange={() => setMedicine(false)}
                   />
-                  {t('no')}
+                  {t('false')}
                 </label>
               </div>
             </fieldset>
