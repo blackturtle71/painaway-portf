@@ -114,8 +114,8 @@ const RegisterPage = () => {
   const gender = {
     label: t('form.gender.ariaLabel'),
     sex: t('form.gender.sex'),
-    male: t('form.gender.male'),
-    female: t('form.gender.female'),
+    male: t('form.gender.M'),
+    female: t('form.gender.F'),
   }
 
   const values = {
