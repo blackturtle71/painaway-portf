@@ -4,6 +4,7 @@ const initialState = {
   modals: {
     isShown: false,
     type: '',
+    data: null,
   },
   selectedBodyPart: {
     pk: null,
@@ -17,16 +18,18 @@ const modalsSlice = createSlice({
   initialState,
   reducers: {
     openModal: (state, { payload }) => {
-      const { type } = payload
+      const { type, data } = payload
       state.modals.isShown = true
       state.modals.type = type
+      state.modals.data = data || null
     },
     closeModal: (state) => {
       state.modals.isShown = false
       state.modals.type = ''
       state.selectedBodyPart.pk = null
       state.selectedBodyPart.name = ''
-      state.setCurrentNote = null
+      state.currentNote = null
+      state.modals.data = null
     },
     setSelectedBodyPart: (state, { payload }) => {
       // or just state.selectedBodyPart = payload

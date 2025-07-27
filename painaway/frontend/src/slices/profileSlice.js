@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   linkId: null,
   doctor: '',
-  treatment: '',
+  prescription: '',
 }
 
 const profileSlice = createSlice({
@@ -16,11 +16,11 @@ const profileSlice = createSlice({
     setDoctor: (state, { payload }) => {
       state.doctor = payload
     },
-    setTreatment: (state, { payload }) => {
-      state.treatment = payload
+    setPrescription: (state, { payload }) => {
+      state.prescription = payload
     },
   },
 })
 
-export const { setLinkId, setDoctor, setTreatment } = profileSlice.actions
+export const { setLinkId, setDoctor, setPrescription } = profileSlice.actions
 export default profileSlice.reducer
