@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 const DocInfo = (props) => {
   const { t } = useTranslation()
   const { values } = props
-  const { doctor, treatment } = values
+  const { doctor, prescription } = values
+  console.log('Doctor Information:', doctor)
+  console.log('Prescription Information:', prescription)
 
   return (
     <section className="doctor-info">
@@ -29,7 +31,7 @@ const DocInfo = (props) => {
             {t('profilePage.treatment')}
             :
           </dt>
-          <dd className="filed-label">{treatment}</dd>
+          <dd className="filed-label">{prescription?.prescription}</dd>
         </div>
       </dl>
     </section>
