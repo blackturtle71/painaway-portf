@@ -20,6 +20,10 @@ export {
   useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
   useRespondToLinkRequestMutation,
+  useSetDiagnosisMutation,
+  useSetPrescriptionMutation,
+  useChangeDiagnosisMutation,
+  useChangePrescriptionMutation,
 } from './linksApi.js'
 export {
   notesApi,
