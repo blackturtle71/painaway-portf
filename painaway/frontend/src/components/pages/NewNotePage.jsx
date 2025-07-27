@@ -41,6 +41,7 @@ const NewNotePage = () => {
         bodyPartPk: note.bodyPartPk,
         painType: note.painType,
         intensity: note.intensity,
+        medicine: note.medicine,
         description: noteText,
       }
       try {
