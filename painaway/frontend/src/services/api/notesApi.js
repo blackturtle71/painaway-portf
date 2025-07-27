@@ -25,13 +25,14 @@ export const notesApi = createApi({
       providesTags: ['Notes'],
     }),
     sendBodyStats: builder.mutation({
-      query: ({ bodyPartPk, painType, intensity, description }) => ({
+      query: ({ bodyPartPk, painType, intensity, medicine, description }) => ({
         url: apiRoutes.bodyStats(),
         method: 'POST',
         body: {
           body_part: bodyPartPk,
           pain_type: painType,
           intensity,
+          tookPrescription: medicine,
           description,
         },
       }),
