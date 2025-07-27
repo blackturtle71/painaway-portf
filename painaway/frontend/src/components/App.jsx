@@ -13,6 +13,7 @@ import PersonalPage from './pages/PersonalPage.jsx'
 import PatientsPage from './pages/PatientsPage.jsx'
 import DiaryPage from './pages/DiaryPage.jsx'
 import NewNotePage from './pages/NewNotePage.jsx'
+import PatientRecordsPage from './pages/PatientRecordsPage.jsx'
 // import ChatPage from './pages/ChatPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import { uiRoutes } from '../routes.js'
@@ -72,6 +73,14 @@ const App = () => {
               element={(
                 <PrivateRoute>
                   <NewNotePage />
+                </PrivateRoute>
+              )}
+            />
+            <Route
+              path="/patient_card/:patientId"
+              element={(
+                <PrivateRoute>
+                  <PatientRecordsPage />
                 </PrivateRoute>
               )}
             />
