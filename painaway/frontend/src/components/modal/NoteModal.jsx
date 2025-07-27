@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import CloseIcon from '../../assets/images/Close.svg'
 import { closeModal } from '../../slices/modalsSlice.js'
+import { formatDateTime } from '../../helpers/dateUtils.js'
 import Human from '../ui/Human.jsx'
 
 const NoteModal = () => {
@@ -13,7 +14,7 @@ const NoteModal = () => {
     <div className="modal-overlay note-modal">
       <div className="modal-window">
         <div className="modal-header">
-          <h2 className="modal-title">{t('diaryPage.noteFrom')}</h2>
+          <h2 className="modal-title">{`${t('diaryPage.noteFrom')} ${formatDateTime(currentNote.date_recorded)}`}</h2>
           <button
             className="modal-close"
             onClick={() => dispatch(closeModal())}
@@ -33,11 +34,11 @@ const NoteModal = () => {
             </div>
             <div className="field-row">
               <span className="field">{t('diaryPage.painType')}</span>
-              <span className="value">{t(`modals.painTypes.${currentNote.pain_type}`)}</span>
+              <span className="value">{t(`painTypes.${currentNote.pain_type}`)}</span>
             </div>
             <div className="field-row">
               <span className="field">{t('diaryPage.isMedicine')}</span>
-              <span className="value">Бэк не принимает</span>
+              <span className="value">{t(`${currentNote.tookPrescription}`)}</span>
             </div>
             <div className="field-row">
               <span className="field">{t('note')}</span>
