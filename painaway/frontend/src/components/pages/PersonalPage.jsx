@@ -9,7 +9,7 @@ import {
   // useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
 } from '../../services/api'
-import { setLinkId, setDoctor, setTreatment } from '../../slices/profileSlice'
+import { setLinkId, setDoctor, setPrescription } from '../../slices/profileSlice'
 import ProfileCard from '../ui/ProfileCard'
 import DocForm from '../ui/DocForm'
 import DocInfo from '../ui/DocInfo'
@@ -20,7 +20,7 @@ const PersonalPage = () => {
 
   // const linkId = useSelector(state => state.profileReducer.linkId)
   const doctor = useSelector(state => state.profileReducer.doctor)
-  const treatment = useSelector(state => state.profileReducer.treatment)
+  const prescription = useSelector(state => state.profileReducer.prescription)
 
   const { data: profileData, isLoading } = useGetProfileDataQuery()
   const { data: linksData, isSuccess } = useGetLinksQuery()
@@ -41,10 +41,11 @@ const PersonalPage = () => {
       if (accepted) {
         dispatch(setLinkId(accepted.id))
         dispatch(setDoctor(accepted.doctor))
+        dispatch(setPrescription(accepted.prescription))
       }
       else {
         dispatch(setDoctor(t('profilePage.notAssigned')))
-        dispatch(setTreatment(t('profilePage.notAssigned')))
+        dispatch(setPrescription(t('profilePage.notAssigned')))
       }
     }
   }, [isSuccess])
@@ -74,7 +75,7 @@ const PersonalPage = () => {
 
   const profileProps = { profileData }
   const formProps = { formik, doctor }
-  const infoProps = { doctor, treatment }
+  const infoProps = { doctor, prescription }
 
   return (
     <section className="personal-page">
