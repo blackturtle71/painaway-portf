@@ -10,6 +10,7 @@ from authentication.models import CustomUser
 from .utils import create_notification
 
 class BodyPartsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
         body_parts = BodyPart.objects.all()
         serializer = BodyPartSerializer(body_parts, many=True)
