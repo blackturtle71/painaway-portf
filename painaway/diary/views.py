@@ -289,9 +289,9 @@ class NotificationView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
-        notifiction_id = request.query_params.get("notifiction_id")
+        notification_id = request.data.get("notification_id")
         try:
-            notification = Notification.objects.get(id=notifiction_id)
+            notification = Notification.objects.get(id=notification_id)
             if notification.owner != request.user:
                 return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -302,9 +302,9 @@ class NotificationView(APIView):
             return Response({'error': 'notification not found'}, status=404)
     
     def delete(self, request):
-        notifiction_id = request.query_params.get("notifiction_id")
+        notification_id = request.data.get("notification_id")
         try:
-            notification = Notification.objects.get(id=notifiction_id)
+            notification = Notification.objects.get(id=notification_id)
             if notification.owner != request.user:
                 return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
 

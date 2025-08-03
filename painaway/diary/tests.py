@@ -9,6 +9,11 @@ from django.core.cache import cache
 from django.test import override_settings
 from django_redis import get_redis_connection
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 class BaseAPITestCase(APITestCase):
     # this thing allows us to connect to redis during testing
@@ -429,6 +434,46 @@ class NotificationTests(BaseAPITestCase):
         response = self.client.get(reverse('notifications'))
         self.assertEqual(len(response.data), 2) # 1 diagnosis + 1 link
 
+    def test_delete_notification(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+
+        self.auth_patient()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 2)
+        notification_ids = (response.data[0]['id'], response.data[1]['id'])
+
+        for id in notification_ids:
+            response = self.client.delete(reverse('notifications'), {"notification_id": id})
+            self.assertEqual(response.status_code, 204)
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 0) # no notifications
+    
+    def test_mark_notification_as_read(self):
+        link_id = self.create_link()
+        self.auth_doc()
+        data = {"link": link_id, "diagnosis": 'DumbFuck'}
+        response = self.client.post(reverse('diagnosis-view') + f"?link_id={link_id}", data)
+
+        self.auth_patient()
+        response = self.client.get(reverse('notifications'))
+        self.assertEqual(len(response.data), 2)
+        notification_ids = (response.data[0]['id'], response.data[1]['id'])
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.data['unread_count'], 2)
+        
+        for id in notification_ids:
+            response = self.client.patch(reverse('notifications'), {"notification_id": id})
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse('unread-count'))
+        self.assertEqual(response.data['unread_count'], 0)
+        
+
+
+
     def test_unread_count_caching(self):
         Notification.objects.create(owner=self.user, message="Test", is_read=False)
 
@@ -474,7 +519,7 @@ class NotificationTests(BaseAPITestCase):
     @override_settings(CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{'localhost' if DEBUG else 'redis'}:6379/1",
         'TIMEOUT': 1,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
