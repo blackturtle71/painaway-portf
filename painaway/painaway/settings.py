@@ -16,6 +16,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
+DOCKER = os.getenv("DOCKER", "False") == "True"
 
 USE_SQLITE = os.getenv("USE_SQLITE", "False") == "True"
 
@@ -44,7 +45,7 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{'localhost' if DEBUG else 'redis'}:6379/1",
+        "LOCATION": f"redis://{'redis' if DOCKER else 'localhost'}:6379/1",
         'TIMEOUT': 60*15, # keep cache for 15 mins
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -53,8 +54,8 @@ CACHES = {
 }
 # celery stuff
 
-CELERY_BROKER_URL = f"redis://{'localhost' if DEBUG else 'redis'}:6379/0'"
-CELERY_RESULT_BACKEND = "redis://{'localhost' if DEBUG else 'redis'}:6379/0"
+CELERY_BROKER_URL = f"redis://{'redis' if DOCKER else 'localhost'}:6379/0'"
+CELERY_RESULT_BACKEND = f"redis://{'redis' if DOCKER else 'localhost'}:6379/0"
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

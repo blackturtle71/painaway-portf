@@ -13,7 +13,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DOCKER = os.getenv("DOCKER", "False") == "True"
 
 class BaseAPITestCase(APITestCase):
     # this thing allows us to connect to redis during testing
@@ -519,7 +519,7 @@ class NotificationTests(BaseAPITestCase):
     @override_settings(CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{'localhost' if DEBUG else 'redis'}:6379/1",
+        "LOCATION": f"redis://{'redis' if DOCKER else 'localhost'}:6379/1",
         'TIMEOUT': 1,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
