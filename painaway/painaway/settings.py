@@ -44,7 +44,7 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{'localhost' if DEBUG else 'redis'}:6379/1",
         'TIMEOUT': 60*15, # keep cache for 15 mins
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -53,8 +53,8 @@ CACHES = {
 }
 # celery stuff
 
-CELERY_BROKER_URL = 'redis://redis:6379/0' 
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = f"redis://{'localhost' if DEBUG else 'redis'}:6379/0'"
+CELERY_RESULT_BACKEND = "redis://{'localhost' if DEBUG else 'redis'}:6379/0"
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
