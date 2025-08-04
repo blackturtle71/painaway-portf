@@ -99,7 +99,13 @@ Example of notification:\
 
 - notifications/unread-count/ - that's a dangerous one. GET will send you the number of unread notifictions for the current user. Howeeeever, we'd better setup some caching or we might clog up the db. And here's the thing, I'm not deploying the site, so I don't know what they'd like me to do with the caching, so, I'll skip it for now.
 
-
+# How to make a doctor
+- `docker-compose exec web python manage.py shell` - opens python shell
+- `from django.contrib.auth.models import Group`
+- `g = Group.objects.get(name='Doctor')`
+- `from authentication.models import CustomUser`
+- `CustomUser.objects.get(username='<str: username>')`
+- `CustomUser.objects.get(username='<str: username>').groups.add(g)`
 # TODO Backend:
 - ~~Add relations (and restrictions) between Patient and Doctor groups~~
 - ~~Add timeout (with autodeletion) for rejected links? (celery + redis + docker)~~
