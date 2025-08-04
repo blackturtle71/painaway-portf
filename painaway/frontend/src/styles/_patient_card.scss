@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 100px;
+  padding: 40px max(5vw, 40px);
+  overflow: auto;
 }
 
 /* Блок с информацией о пациенте */
@@ -121,7 +122,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 150px;
 
   .records-title {
     font-size: $secondary-font-size;

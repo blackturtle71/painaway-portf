@@ -6,8 +6,9 @@ import Logo from '../assets/images/Logo.png'
 import bell from '../assets/images/Notifications.png'
 import Navigation from './ui/Navigation'
 import { uiRoutes } from '../routes'
-import { authApi, notesApi } from '../services/api'
+import { authApi, notesApi, linksApi } from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import { openModal } from '../slices/modalsSlice'
 
 const AuthButton = () => {
   const { t } = useTranslation()
@@ -19,12 +20,13 @@ const AuthButton = () => {
     dispatch(clearLocalStorage())
     dispatch(authApi.util.invalidateTags(['Profile']))
     dispatch(notesApi.util.resetApiState())
+    dispatch(linksApi.util.resetApiState())
     dispatch(clearNotes())
     navigate(uiRoutes.login)
   }
 
   const handleOpenNotification = () => {
-    console.log('Open notification')
+    dispatch(openModal({ type: 'notifications' }))
   }
 
   if (!token) return null

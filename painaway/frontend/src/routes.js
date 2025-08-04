@@ -19,6 +19,7 @@ export const apiRoutes = {
   bodyStats: () => 'diary/stats/',
   patientRecords: patientId => `/diary/stats/?patient_id=${patientId}`,
   bodyPartObjects: () => 'diary/bodyparts/',
+  notifications: () => 'diary/notifications/',
 }
 
 export const uiRoutes = {

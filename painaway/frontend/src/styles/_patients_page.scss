@@ -4,8 +4,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
   padding-top: 75px;
+  position: relative;
 
   .find-patient {
     display: flex;
@@ -53,14 +55,18 @@
   }
 }
 
+.patients-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 80px 40px;
+}
+
 .accepted-patients {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 46px;
   margin-top: 20px;
   max-width: 100%;
-  padding: 0 80px;
-  justify-content: center;
 }
 
 .patient-card {

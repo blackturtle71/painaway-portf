@@ -32,3 +32,9 @@ export {
   useSendBodyStatsMutation,
   useUpdateBodyStatsMutation,
 } from './notesApi.js'
+export {
+  notificationsApi,
+  useGetNotificationsQuery,
+  useMarkNotificationReadMutation,
+  useDeleteNotificationMutation,
+} from './notificationsApi.js'

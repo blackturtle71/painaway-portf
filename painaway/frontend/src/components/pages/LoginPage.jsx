@@ -35,7 +35,7 @@ const LoginPage = () => {
 
       try {
         const response = await loginUser(values).unwrap()
-        console.log('Вход', response)
+
         dispatch(persistAuth(response))
         dispatch(authApi.util.invalidateTags(['Profile']))
         navigate(uiRoutes.profile())

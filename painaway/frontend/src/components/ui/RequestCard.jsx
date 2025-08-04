@@ -36,8 +36,7 @@ const RequestCard = ({ request }) => {
 
   const handleReject = async () => {
     try {
-      await respondToLinkRequest({ patient_id: patientId, action: 'reject' }).unwrap()
-      console.log('reject')
+      await respondToLinkRequest({ patientId, action: 'reject' }).unwrap()
     }
     catch (err) {
       console.error('Error reject request:', err)
@@ -46,7 +45,7 @@ const RequestCard = ({ request }) => {
 
   const handleSave = async () => {
     const linkId = request.id
-    console.log(linkId)
+
     try {
       await respondToLinkRequest({ patientId, action: 'accept' }).unwrap()
 

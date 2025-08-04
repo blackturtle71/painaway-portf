@@ -78,6 +78,12 @@
       .field {
         color: $secondary-color;
       }
+      .value {
+        max-height: 200px; // или сколько тебе визуально комфортно
+        overflow-y: auto;
+        display: block;
+        padding-right: 5px; // небольшой отступ для скролла
+      }
     }
   }
 }

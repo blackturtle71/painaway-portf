@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { useGetLinksQuery } from '../../services/api/linksApi.js'
+import PatientCard from '../ui/PatientCard.jsx'
 import { openModal } from '../../slices/modalsSlice.js'
 import InputField from '../ui/InputField.jsx'
-import Modal from '../modal/Modal.jsx'
 import { useNavigate } from 'react-router-dom'
 import { uiRoutes } from '../../routes.js'
 
@@ -52,43 +52,16 @@ const PatientsPage = () => {
         />
       </div>
 
-      <div className="accepted-patients">
-        {filteredPatients.map((patient) => {
-          return (
-            <div
+      <div className="patients-scroll-container">
+        <div className="accepted-patients">
+          {filteredPatients.map(patient => (
+            <PatientCard
               key={patient.id}
-              className="patient-card"
-              onClick={() => handlePatientClick(patient.patient.id)}
-            >
-              <div className="patient-info">
-                <span className="full-name">
-                  <span>{patient.patient.last_name}</span>
-                  <span>{patient.patient.first_name}</span>
-                  <span>{patient.patient.father_name}</span>
-                </span>
-                <span className="birthday">
-                  {patient.patient.date_of_birth}
-                </span>
-              </div>
-              <div className="patient-diagnosis">
-                <div className="field-row">
-                  <label htmlFor="diagnosis">
-                    {t('patientsPage.diagnosis')}
-                    {': '}
-                  </label>
-                  <span className="diagnosis">{patient.diagnosis?.diagnosis || 'Нет диагноза'}</span>
-                </div>
-                <div className="field-row">
-                  <label htmlFor="new-entries">
-                    {t('patientsPage.numberEntries')}
-                    {': '}
-                  </label>
-                  <span className="new-entries">Тут новые записи</span>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+              patient={patient}
+              handlePatientClick={handlePatientClick}
+            />
+          ))}
+        </div>
       </div>
 
       <aside className="new-requests">
@@ -99,7 +72,6 @@ const PatientsPage = () => {
           {t('patientsPage.newRequests')}
         </button>
       </aside>
-      <Modal />
     </section>
   )
 }

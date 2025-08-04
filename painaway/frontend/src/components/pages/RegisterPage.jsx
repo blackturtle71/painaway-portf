@@ -60,11 +60,9 @@ const RegisterPage = () => {
           date_of_birth: values.birthday,
         }).unwrap()
 
-        toast.success(t('success.registration'))
         navigate(uiRoutes.login())
       }
       catch (err) {
-        console.log(err.data)
         const errors = err.data || {}
 
         if (errors.username) {

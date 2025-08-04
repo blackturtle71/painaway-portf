@@ -20,7 +20,6 @@ export const linksApi = createApi({
     // get all links (doctor - patient)
     getLinks: builder.query({
       query: () => apiRoutes.linksData(),
-      providesTags: ['Links'],
     }),
     getPatientRecords: builder.query({
       query: patientId => apiRoutes.patientRecords(patientId),
@@ -37,6 +36,7 @@ export const linksApi = createApi({
         method: 'POST',
         body: { doc_username: docLogin },
       }),
+      invalidatesTags: ['Links'],
     }),
     respondToLinkRequest: builder.mutation({
       query: ({ patientId, action }) => ({
@@ -44,6 +44,7 @@ export const linksApi = createApi({
         method: 'POST',
         body: { patient_id: patientId, action },
       }),
+      invalidatesTags: ['Links'],
     }),
     setDiagnosis: builder.mutation({
       query: ({ linkId, diagnosisText }) => ({

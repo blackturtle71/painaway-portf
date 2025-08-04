@@ -5,24 +5,23 @@ import { useGetBodyStatsQuery } from '../../services/api'
 import { useDispatch } from 'react-redux'
 import { openModal, setCurrentNote } from '../../slices/modalsSlice'
 import { formatDateTime } from '../../helpers/dateUtils.js'
-import Modal from '../modal/Modal'
 
 const DiaryPage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { data = [] } = useGetBodyStatsQuery()
-  console.log('Notes about pain', data)
+  const { data = [], isLoading } = useGetBodyStatsQuery()
 
   const handleNewNoteClick = () => {
     navigate(uiRoutes.newNote())
   }
 
   const handleOpenNoteClick = (note) => {
-    console.log('note', note)
     dispatch(setCurrentNote(note))
     dispatch(openModal({ type: 'note' }))
   }
+
+  if (isLoading) return <div>Loading...</div>
 
   return (
     <section className="diary-section">
@@ -68,7 +67,6 @@ const DiaryPage = () => {
           </button>
         </aside>
       </div>
-      <Modal />
     </section>
   )
 }

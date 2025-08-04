@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSendBodyStatsMutation } from '../../services/api/notesApi.js'
 import { clearNotes, setNoteText } from '../../slices/notesSlice.js'
 
 import Human from '../ui/Human'
-import Modal from '../modal/Modal'
 import SubmitButton from '../ui/SubmitButton.jsx'
 import { useEffect } from 'react'
 
@@ -12,16 +12,8 @@ const NewNotePage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notesReducer.notes)
-  console.log(notes)
   const noteText = useSelector(state => state.notesReducer.noteText)
   const [sendBodyStats] = useSendBodyStatsMutation()
-
-  useEffect(() => {
-    if (notes) {
-      const bodyParts = notes.map(note => note.bodyPartName)
-      console.log('Names bodyParts', bodyParts)
-    }
-  }, [notes])
 
   useEffect(() => {
     // При размонтировании страницы сбросить данные
@@ -46,6 +38,7 @@ const NewNotePage = () => {
       }
       try {
         await sendBodyStats(payload).unwrap()
+        toast.success(t('success.makeRecord'))
         dispatch(clearNotes())
       }
       catch (err) {
@@ -75,7 +68,6 @@ const NewNotePage = () => {
           </div>
           <SubmitButton title={t('save')} onClick={handleSubmit} disabled={isSubmitDisabled} />
         </div>
-        <Modal />
       </div>
     </div>
   )

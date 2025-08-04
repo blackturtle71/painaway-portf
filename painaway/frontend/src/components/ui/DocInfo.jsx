@@ -4,8 +4,6 @@ const DocInfo = (props) => {
   const { t } = useTranslation()
   const { values } = props
   const { doctor, prescription } = values
-  console.log('Doctor Information:', doctor)
-  console.log('Prescription Information:', prescription)
 
   return (
     <section className="doctor-info">

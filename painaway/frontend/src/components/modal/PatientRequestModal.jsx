@@ -9,9 +9,10 @@ const PatientRequestModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
-  const { data: linksData } = useGetLinksQuery()
+  const { data: linksData, isLoading: isLoadingRequests } = useGetLinksQuery()
   const requests = linksData?.filter(link => link.status === 'pending') || []
-  console.log('linksData', linksData)
+
+  if (isLoadingRequests) return <div>Loading...</div>
 
   return (
     <div className="modal-overlay request-modal">

@@ -32,7 +32,6 @@ const modalsSlice = createSlice({
       state.modals.data = null
     },
     setSelectedBodyPart: (state, { payload }) => {
-      // or just state.selectedBodyPart = payload
       const { pk, name } = payload
       state.selectedBodyPart.pk = pk
       state.selectedBodyPart.name = name

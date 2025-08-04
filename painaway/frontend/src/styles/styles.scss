@@ -15,6 +15,7 @@
 @use './human';
 @use './patient_card';
 @use './change_modal';
+@use './notifications_modal';
 
 @font-face {
   font-weight: $base-font-weight;
@@ -34,9 +35,14 @@ html {
   box-sizing: inherit;
 }
 
+html, body, #root {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   height: 100%;
-  overflow: hidden; // запретить глобальный scroll — контролировать локально
   font-family: "Montserrat Medium", sans-serif;
   font-size: $primary-font-size;
   background-color: $bg-color;
@@ -47,12 +53,12 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+
 }
 
 main {
   flex: 1 0 auto;
-  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: auto;

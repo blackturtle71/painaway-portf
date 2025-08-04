@@ -9,6 +9,7 @@ export default {
     false: 'Нет',
     note: 'Заметка',
     change: 'изменить',
+    notifications: 'Уведомления',
     alt: {
       mainNav: 'Меню пользователя',
       authControls: 'Кнопки уведомлений и выхода',
@@ -63,6 +64,7 @@ export default {
     success: {
       registration: 'Регистрация прошла успешно!',
       attachment: 'Запрос на прикрепление отправлен!',
+      makeRecord: 'Запись успешно создана!',
     },
     profilePage: {
       fullName: 'ФИО',
@@ -77,7 +79,7 @@ export default {
     },
     patientsPage: {
       patientsList: 'Список пациентов',
-      findPatient: 'Введите ФИО пациента...',
+      findPatient: 'Введите фамилию пациента...',
       findButton: 'Поиск',
       diagnosis: 'Диагноз',
       numberEntries: 'Количество записей',

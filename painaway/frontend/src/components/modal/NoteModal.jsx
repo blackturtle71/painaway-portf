@@ -9,7 +9,7 @@ const NoteModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const currentNote = useSelector(state => state.modalsReducer.currentNote)
-  console.log('currentNote', currentNote)
+
   return (
     <div className="modal-overlay note-modal">
       <div className="modal-window">

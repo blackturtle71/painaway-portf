@@ -1,18 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { openModal, setSelectedBodyPart } from '../../slices/modalsSlice.js'
 import { useMemo } from 'react'
+import { useGetBodyPartObjectQuery } from '../../services/api/notesApi.js'
 
 const Human = ({ interactive, currentNote }) => {
   const dispatch = useDispatch()
   const notes = useSelector(state => state.notesReducer.notes)
-  const bodyPartsList = useSelector(state => state.bodyPartsReducer.list)
-
-  const savedBodyParts = useMemo(() => {
-    return notes.map(n => n.bodyPartPk)
-  }, [notes])
+  const { data: bodyPartsList, isLoading: isLoadingBodyParts, isError } = useGetBodyPartObjectQuery()
 
   const intensityMapByBodyPart = useMemo(() => {
     const map = {}
+
+    if (!bodyPartsList) return map
 
     if (currentNote) {
       const part = bodyPartsList.find(part => part.id === currentNote.body_part)
@@ -28,20 +27,21 @@ const Human = ({ interactive, currentNote }) => {
     }
 
     return map
-  }, [notes])
+  }, [notes, currentNote, bodyPartsList])
+
+  if (isLoadingBodyParts) return <div>Загрузка...</div>
+  if (isError) return <div>Ошибка загрузки</div>
+  if (!bodyPartsList) return null
 
   const handleBodyClick = (e) => {
     if (!interactive) return
 
     const name = e.target.dataset.name
-    console.log('Клик по части тела:', name)
+
     if (!name) return
     const selectedBodyPart = bodyPartsList.find(part => part.translation === name)
-    console.log('Найдена часть тела:', selectedBodyPart)
 
     if (selectedBodyPart) {
-      console.log('click', name)
-      console.log('its pk', selectedBodyPart.id)
       dispatch(setSelectedBodyPart({ pk: selectedBodyPart.id, name }))
       dispatch(openModal({ type: 'newNote' }))
     }
@@ -124,10 +124,10 @@ const Human = ({ interactive, currentNote }) => {
           onClick={handleBodyClick}
         />
         <path
-          className={`body__part intensity-${intensityMapByBodyPart['Правая часть руки'] ?? 0}`}
+          className={`body__part intensity-${intensityMapByBodyPart['Правая часть груди'] ?? 0}`}
           d="m 11.351215,17.085495 -1.7294199,3.09103 -1.89346,0.94785 1.15295,0.90662 0.90586,2.63773 2.0996699,0.86537 3.34636,-1.655 -0.83462,-6.50527 z"
           id="chest-right"
-          data-name="Правая часть руки"
+          data-name="Правая часть груди"
           onClick={handleBodyClick}
         />
         <path
@@ -306,7 +306,7 @@ const Human = ({ interactive, currentNote }) => {
           onClick={handleBodyClick}
         />
         <path
-          className={`body__part ${savedBodyParts.includes('Задняя часть головы') ? 'highlighted' : ''}`}
+          className={`body__part intensity-${intensityMapByBodyPart['Задняя часть головы'] ?? 0}`}
           d="m 48.157455,6.3585449 0.44208,-0.14964 0.16111,0.16427 1.48163,4.0475101 2.32401,1.45118 2.39971,-1.52387 0.97577,-3.6896901 0.52752,-0.55908 0.23367,0.0981 0.24198,-3.34467 -2.03129,-2.31103004 -2.84509,-0.51629 -2.20422,0.52915 -1.93631,2.63077004 z"
           id="head-back"
           data-name="Задняя часть головы"

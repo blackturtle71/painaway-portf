@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { openModal, setCurrentNote } from '../../slices/modalsSlice'
 import { useGetLinksQuery, useGetPatientRecordsQuery } from '../../services/api/linksApi'
 import { useParams } from 'react-router-dom'
-import Modal from '../modal/Modal'
 import IntensityGraph from '../ui/IntensityGraph'
 import { formatDate, formatDateTime } from '../../helpers/dateUtils'
 
@@ -17,14 +16,9 @@ const PatientRecordsPage = () => {
   })
   const { patientId } = useParams()
   const currentPatient = linksData?.find(link => link.patient.id === Number(patientId))
-  console.log('id', patientId)
-  console.log('current link', currentPatient?.id)
-  console.log('currentPatient', currentPatient)
   const { data: records = [], isLoading: isLoadingRecords } = useGetPatientRecordsQuery(Number(patientId), {
     skip: !patientId,
   })
-  console.log('dataProfile', linksData)
-  console.log('records', records)
 
   const recordsForGraph = useMemo(() => records.map((record) => {
     return {
@@ -33,7 +27,30 @@ const PatientRecordsPage = () => {
       intensity: record.intensity,
     }
   }), [records])
-  console.log('recordsForGraph', recordsForGraph)
+
+  const groupRecordsByDate = (recordsForGraph) => {
+    const grouped = recordsForGraph.reduce((acc, { date, intensity }) => {
+      if (!Object.hasOwn(acc, date)) {
+        acc[date] = {
+          date,
+          sum: 0,
+          count: 0,
+        }
+      }
+
+      acc[date].sum += intensity
+      acc[date].count += 1
+
+      return acc
+    }, {})
+
+    return Object.values(grouped).map(({ date, sum, count }) => ({
+      date,
+      average: +(sum / count).toFixed(0),
+    }))
+  }
+
+  const groupedData = groupRecordsByDate(recordsForGraph)
 
   if (isLoadingProfile) {
     return <div>Загрузка профиля...</div>
@@ -104,13 +121,13 @@ const PatientRecordsPage = () => {
         <div className="dynamics-pain">
           <div className="dynamics-pain-title">{t('patientsPage.intensityDynamic')}</div>
           <div className="dynamic-pain-graph">
-            {recordsForGraph.length > 0
+            {groupedData.length > 0
               ? (
-                  recordsForGraph.map(({ id, date, intensity }) => (
+                  groupedData.map(({ date, average }) => (
                     <IntensityGraph
-                      key={id}
+                      key={date}
                       date={date}
-                      intensity={intensity}
+                      intensity={average}
                     />
                   ))
                 )
@@ -145,7 +162,6 @@ const PatientRecordsPage = () => {
           ))}
         </div>
       </div>
-      <Modal />
     </section>
   )
 }

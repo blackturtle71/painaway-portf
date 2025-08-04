@@ -28,12 +28,8 @@ const NewNoteModal = () => {
     }
   }, [note?.bodyPartPk])
 
-  // const isDataValid = intensity !== null && painType !== ''
-
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    // if (!isDataValid) return
 
     dispatch(addOrUpdateNote({
       bodyPartPk: selectedBodyPart.pk,
@@ -42,8 +38,6 @@ const NewNoteModal = () => {
       painType,
       medicine,
     }))
-    // console.log('painIntensity', painIntensity, 'painType', painType, 'medicine', medicine)
-    // console.log('note', note)
     dispatch(closeModal())
   }
 

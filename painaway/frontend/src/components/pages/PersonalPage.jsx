@@ -1,7 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { useEffect } from 'react'
 import { useFormik } from 'formik'
 import {
   useGetLinksQuery,
@@ -9,46 +8,21 @@ import {
   // useGetPrescriptionDataQuery,
   useSelectDoctorMutation,
 } from '../../services/api'
-import { setLinkId, setDoctor, setPrescription } from '../../slices/profileSlice'
 import ProfileCard from '../ui/ProfileCard'
 import DocForm from '../ui/DocForm'
 import DocInfo from '../ui/DocInfo'
 
 const PersonalPage = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
 
-  // const linkId = useSelector(state => state.profileReducer.linkId)
-  const doctor = useSelector(state => state.profileReducer.doctor)
-  const prescription = useSelector(state => state.profileReducer.prescription)
+  const token = useSelector(state => state.authReducer.token)
 
-  const { data: profileData, isLoading } = useGetProfileDataQuery()
-  const { data: linksData, isSuccess } = useGetLinksQuery()
-  // const {
-  //  data: prescriptionsData,
-  //   isSuccess: prescriptionSuccess,
-  // } = useGetPrescriptionDataQuery(linkId, { skip: !linkId })
-
+  const { data: profileData, isLoading: isProfileLoading } = useGetProfileDataQuery(undefined, { skip: !token })
+  const { data: linksData = [], isLoading: isLinksLoading } = useGetLinksQuery()
   const [selectDoctor] = useSelectDoctorMutation()
-  console.log('ProfileData:', profileData)
-  console.log('linksData:', linksData)
-  // console.log(doctor)
-
-  useEffect(() => {
-    if (isSuccess) {
-      const accepted = linksData.find(link => link.status === 'accepted')
-
-      if (accepted) {
-        dispatch(setLinkId(accepted.id))
-        dispatch(setDoctor(accepted.doctor))
-        dispatch(setPrescription(accepted.prescription))
-      }
-      else {
-        dispatch(setDoctor(t('profilePage.notAssigned')))
-        dispatch(setPrescription(t('profilePage.notAssigned')))
-      }
-    }
-  }, [isSuccess])
+  const acceptedLink = linksData.find(link => link.status === 'accepted')
+  const doctor = acceptedLink?.doctor
+  const prescription = acceptedLink?.prescription
 
   const formik = useFormik({
     initialValues: {
@@ -56,8 +30,7 @@ const PersonalPage = () => {
     },
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await selectDoctor(values.doctorLogin).unwrap()
-        console.log('ответ от сервера:', response)
+        await selectDoctor(values.doctorLogin).unwrap()
         toast.success(t('success.attachment'))
         resetForm()
       }
@@ -67,15 +40,18 @@ const PersonalPage = () => {
     },
   })
 
-  if (isLoading) {
+  if (isProfileLoading || isLinksLoading) {
     return <div>Loading...</div>
   }
 
   const isDoctor = profileData.groups?.includes('Doctor')
 
   const profileProps = { profileData }
-  const formProps = { formik, doctor }
-  const infoProps = { doctor, prescription }
+  const formProps = { formik, doctor: doctor ?? t('profilePage.notAssigned') }
+  const infoProps = {
+    doctor: doctor ?? t('profilePage.notAssigned'),
+    prescription: prescription ?? t('profilePage.notAssigned'),
+  }
 
   return (
     <section className="personal-page">
@@ -85,7 +61,7 @@ const PersonalPage = () => {
 
       {!isDoctor && (
         <div className="attending-physician">
-          {doctor === t('profilePage.notAssigned') ? <DocForm values={formProps} /> : <DocInfo values={infoProps} />}
+          {doctor?.id ? <DocInfo values={infoProps} /> : <DocForm values={formProps} />}
         </div>
       )}
     </section>

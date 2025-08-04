@@ -10,8 +10,6 @@ const ChangeModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
-  const modalData = useSelector(state => state.modalsReducer.modals.data)
-  console.log('modalData', modalData)
   const diagnosisId = useSelector(state => state.modalsReducer.modals.data?.currentPatient?.diagnosis?.id)
   const prescriptionId = useSelector(state => state.modalsReducer.modals.data?.currentPatient?.prescription?.id)
 
@@ -19,11 +17,8 @@ const ChangeModal = () => {
   const [prescriptionText, setPrescriptionText] = useState('')
   const [changeDiagnosis] = useChangeDiagnosisMutation()
   const [changePrescription] = useChangePrescriptionMutation()
-  console.log('diagnosisId', diagnosisId)
-  console.log('prescriptionId', prescriptionId)
+
   const handleSave = async () => {
-    console.log('diagnosisId', diagnosisId)
-    console.log('prescriptionId', prescriptionId)
     try {
       if (diagnosisText.trim()) {
         await changeDiagnosis({ diagnosisId, diagnosisText })
