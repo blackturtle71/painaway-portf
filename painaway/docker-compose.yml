@@ -8,7 +8,22 @@ services:
     networks:
       - backend_network
     restart: unless-stopped
-
+  
+  db:
+    image: postgres:13
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
+    restart: unless-stopped
+    
   web:
     build: .
     ports:
@@ -16,7 +31,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - backend_network
     restart: unless-stopped
@@ -27,6 +45,7 @@ services:
     env_file:
       - .env
     depends_on:
+      - db
       - web
       - redis
     networks:
@@ -47,6 +66,7 @@ services:
 
 volumes:
   redis_data:
+  postgres_data:
 
 networks:
   backend_network:

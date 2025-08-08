@@ -2,7 +2,6 @@ import os
 import sys
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
-import dj_database_url
 from dotenv import load_dotenv
 from celery.schedules import crontab
 
@@ -140,7 +139,6 @@ else:
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-# switch to Postgresql
 
 if USE_SQLITE is True:
     DATABASES = {
@@ -149,12 +147,17 @@ if USE_SQLITE is True:
             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
-elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
-        raise Exception("DATABASE_URL environment variable not defined")
+else:
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
+}
 
 
 # Password validation
