@@ -6,7 +6,8 @@ Basic route for api apps is: http://localhost:8000/api/{app_name}/{the rest of t
 - first of all install docker-compose
 - cd into painway (same level as manage.py)
 - `docker-compose up -d --build` this one will install and run everything you need and then detach from the terminal
-
+- `chmod +x migrations.sh`
+- `./migrations.sh` - run migrations and autopop BodyParts
 The backend is ready for use.
 
 - when you need to stop it run `docker-compose stop`
@@ -16,8 +17,11 @@ The backend is ready for use.
 
 - `docker-compose down -v` deletes the old container and it's data (including the db)
 - `docker-compose up -d --build`
+- `./migrations.sh`
 
 We technicaly don't need to nuke the container to setup the updates for the backend, but I'd rather nuke it than deal with possible errors.
+
+NOTE: you can nuke only the container, but not the db by running `docker-compose down`
 
 # Glossary
 
@@ -99,7 +103,13 @@ Example of notification:\
 
 - notifications/unread-count/ - that's a dangerous one. GET will send you the number of unread notifictions for the current user. Howeeeever, we'd better setup some caching or we might clog up the db. And here's the thing, I'm not deploying the site, so I don't know what they'd like me to do with the caching, so, I'll skip it for now.
 
-
+# How to make a doctor
+- `docker-compose exec web python manage.py shell` - opens python shell
+- `from django.contrib.auth.models import Group`
+- `g = Group.objects.get(name='Doctor')`
+- `from authentication.models import CustomUser`
+- `CustomUser.objects.get(username='<str: username>')`
+- `CustomUser.objects.get(username='<str: username>').groups.add(g)`
 # TODO Backend:
 - ~~Add relations (and restrictions) between Patient and Doctor groups~~
 - ~~Add timeout (with autodeletion) for rejected links? (celery + redis + docker)~~
