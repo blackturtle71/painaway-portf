@@ -1,4 +1,6 @@
-export const apiBase = '/api/'
+const isProd = import.meta.env.PROD;
+
+export const apiBase = isProd ? 'https://blackturtle71.pythonanywhere.com/api/' : '/api/';
 
 export const apiRoutes = {
   register: () => 'auth/register/',
