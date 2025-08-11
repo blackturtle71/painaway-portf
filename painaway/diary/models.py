@@ -47,7 +47,7 @@ class PatientDoctorLink(models.Model):
     
 class Prescription(models.Model):
     link = models.OneToOneField(PatientDoctorLink, on_delete=models.CASCADE, related_name='prescription')
-    prescription = models.CharField(max_length=50, null=False)
+    prescription = models.CharField(max_length=200, null=False)
     details = models.TextField(blank=True)
 
     def __str__(self):
@@ -55,7 +55,7 @@ class Prescription(models.Model):
 
 class Diagnosis(models.Model):
     link = models.OneToOneField(PatientDoctorLink, on_delete=models.CASCADE, related_name='diagnosis')
-    diagnosis = models.CharField(max_length=50, null=False)
+    diagnosis = models.CharField(max_length=200, null=False)
     details = models.TextField(blank=True)
 
     def __str__(self):
