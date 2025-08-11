@@ -97,15 +97,6 @@ class SendDoctorRequestView(APIView):
             return Response({'detail': "Request sent"}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-    def delete(self, request):
-        doc_username = request.data.get('doc_username')
-        try:
-            link = PatientDoctorLink.objects.get(patient=request.user, doctor__username=doc_username)
-            link.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except PatientDoctorLink.DoesNotExist:
-            return Response({'error': 'Request does not exists'}, status=status.HTTP_404_NOT_FOUND)
     
 class RespondToPatientRequestView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsDoctor]
@@ -127,6 +118,15 @@ class RespondToPatientRequestView(APIView):
             return Response({'detail': f'Request {action}ed.'}, status=status.HTTP_200_OK)
         except PatientDoctorLink.DoesNotExist:
             return Response({'error': 'Request not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request):
+        patient_id = request.data.get('patient_id')
+        try:
+            link = PatientDoctorLink.objects.get(patient__id=patient_id, doctor=request.user)
+            link.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except PatientDoctorLink.DoesNotExist:
+            return Response({'error': 'Request does not exists'}, status=status.HTTP_404_NOT_FOUND)
 
 class ListLinksView(APIView):
     permission_classes = [permissions.IsAuthenticated]

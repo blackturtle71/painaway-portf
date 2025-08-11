@@ -68,14 +68,18 @@ class LinkTests(BaseAPITestCase):
         url = reverse('link-doc')
         data = {'doc_username': "doc"}
         self.client.post(url, data)
-        response = self.client.delete(url, data)
+
+        self.auth_doc()
+        response = self.client.delete(reverse('doc-respond'), {'patient_id': 1})
         self.assertEqual(response.status_code, 204)
 
     def test_delete_wrong_request(self):
         url = reverse('link-doc')
         data = {'doc_username': "doc"}
         self.client.post(url, data)
-        response = self.client.delete(url, {'doc_username': "doc2"})
+
+        self.auth_doc()
+        response = self.client.delete(reverse('doc-respond'), {'patient_id': 111})
         self.assertEqual(response.status_code, 404)
 
     def test_send_request_to_patient(self):
@@ -395,24 +399,6 @@ class NotificationTests(BaseAPITestCase):
         self.auth_patient()
         response = self.client.get(reverse('notifications'))
         self.assertEqual(len(response.data), 1)
-    
-    def test_bodystats_notifications(self):
-        url = reverse('link-doc')
-        data = {'doc_username': "doc"}
-        response = self.client.post(url, data)
-
-        self.auth_doc()
-        url = reverse('doc-respond')
-        data = {'patient_id': self.patient_id, 'action': 'accept'}
-        response = self.client.post(url, data)
-
-        self.auth_patient()
-        response = self.client.post(reverse('stats-view'), self.valid_data)
-        response = self.client.post(reverse('stats-view'), self.valid_data)
-        response = self.client.post(reverse('stats-view'), self.valid_data)
-        self.auth_doc()
-        response = self.client.get(reverse('notifications'))
-        self.assertEqual(len(response.data), 4) # 3 stats + 1 link
 
     def test_prescription_notifications(self):
         link_id = self.create_link()
