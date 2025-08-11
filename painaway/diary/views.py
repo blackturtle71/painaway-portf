@@ -44,13 +44,6 @@ class BodyStatsView(APIView):
         serializer = BodyStatsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
-
-            active_links = PatientDoctorLink.objects.filter(
-                patient=user, status="accepted"
-            ).select_related('doctor') # select related does some SQL optimization
-            for link in active_links:
-                create_notification(user=link.doctor, message=f"Новая запись от {user.full_name}")
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
