@@ -52,14 +52,14 @@ Example of the request to register/\
     "date_of_birth": "2000-7-1" # YYYY-MM-DD, set between 1900-1-1 and current date (will throw 400 on wrong date)\
     }
 
-# Chat
+# Chat - currently borked, but since it's left unused, expect no fixes
 
 All convos are p2p, meaning, only two persons are allowed per chat. Don't forget to pass the token in headers (except websocket, here the token goes to the URL)
 
 Routes:
 
-- ws://localhost:8000/ws/chat/<int:id of a user to chat with>/?token=<current user's token> - that's the URL for a bloody fucking piece of flying turtle's shit (async websocket), ~~have no fucking clue how they work~~ have some fucking clue how they work. You connect at this fucked up endpoint and this crap sends you all the messages sent between the current user and their buddy (I call them peers), that's like history of the convo. All you need to do is use cancerous JS websocket fuckery to send JSON like this {"message": "FUCK YOU"}, the api will handle timestamps and users. We'll call this motherfucker - the technical route, the one that does all the messaging
-- conversations/\<int:peer_id>/ - that's a normal GET URL, will send all the messages between the current user and the peer (it's here, cuz browsers normally can't connect thru websockets put in the URL field), use this URL to render the chatbox (sending and receiving is still done thru the route above). That's the beauty route, the one that presents all the underlying crap in a normal, human readable format
+- ws://localhost:8000/ws/chat/<int:id of a user to chat with>/?token=<current user's token> - that's the URL for async websocket. You connect at this endpoint and this thing sends you all the messages sent between the current user and their buddy (I call them peers), that's like history of the convo. All you need to do is use JS websocket magick to send JSON like this {"message": "HALLO"}, the api will handle timestamps and users. We'll call this route - the technical route, the one that does all the messaging
+- conversations/\<int:peer_id>/ - that's a normal GET URL, will send all the messages between the current user and the peer (it's here, cuz browsers normally can't connect thru websockets put in the URL field), use this URL to render the chatbox (sending and receiving is still done thru the route above). That's the beauty route, the one that presents all the underlying stuff in a normal, human readable format
 - conversations/ - GET will send all the usernames current user has at least one message with, note that it's exactly a username, not an instance of User object; POST with {"peer_id": \<int:peer_id>} will return an URL to the required chat, use it if you need, or not. it will throw an error if user doesn't exist, so you can add some fancy stuff
 - conversations/delete/\<int:peer_id>/ - DELETE will, well, delete any message exchanged between the user and the peer (doesn't matter who's a sender, everything is deleted)
 
@@ -70,8 +70,8 @@ The db is auto populated with BodyPart objects (they are named after the names o
 Routes:
 
 - notes/ - ~~GET will send a list of notes the user has; POST will allow creating a note, just send {"title": "some title", "body": "some text"} (title is required); PATCH will allow to alter title and body of the note (specified by pk, so you must send {"note_pk":\<int:pk>, \<title or body or both>}; DELETE will delete the note by pk {"note_pk": \<int:pk>}~~ REMOVED
-- link_doc/ - POST, available only for Patient group. You send {'doc_username': \<str:username>} and it will send a request for linking to the specified doctor. Status will be auto set to "pending"; DELETE, you send {'doc_username': \<str:username>} and the request for this doc gets deleted (handy if the link was rejected, user just deletes it)
-- doc_respond/ - POST, available only for Doctor group. You send {'patient_id': \<int:user.id>, 'action':\<'accept' or 'reject'>}. Accept or reject the linking proccess (note that the link exists anyway, but based on its status the doc can see patient's data)
+- link_doc/ - POST, available only for Patient group. You send {'doc_username': \<str:username>} and it will send a request for linking to the specified doctor. Status will be auto set to "pending"; 
+- doc_respond/ - POST, available only for Doctor group. You send {'patient_id': \<int:user.id>, 'action':\<'accept' or 'reject'>}. Accept or reject the linking proccess (note that the link exists anyway, but based on its status the doc can see patient's data); DELETE, you send {'patient_id': \<int:id>} and the request for this doc and user gets deleted (use it to unlink patient from the doc)
 - list_links/ - GET, anyone can send requests here. returns the list of active links (here you can actually get ids of patients for doc_respond/), also returns the prescription and diagnosis linked to the link
 - bodyparts/ - GET will send you all the BodyPart objects in the db (must be 44), you need it to extract pks
 - stats/ - GET will send a list of BodyStats the user has; POST will allow creating a stat, just send{"body_part": 25, "pain_type": "stabbing", "intensity": 3, "tookPrescription":True, "description": "fell on my scissors} (first four fields are required, "description" is not; tookPrescription is False by default), body_part is a pk from one of the BodyPart objects, pain_type must be one of these - ['burning', 'stabbing', 'cutting', 'throbbing'], intensity must be in range of 0 to 10 ; PATCH will allow to alter the stat (specified by pk, so you must send {"stat_pk":\<int:pk>, \<what to alter>}; DELETE will delete the stat by pk {"stat_pk": \<int:pk>}. DOCTOR ONLY FEATURE: if you send GET to stats/?patient_id=\<int: user.id> the doc will see the stats of the specified patient\
@@ -124,4 +124,4 @@ Example of notification:\
     - ~~Create autotests~~
     - ~~add caching for notifications/unread-count/~~
 - ~~Set up Docker~~
-- Switch to Postgresql?
+- ~~Switch to Postgresql?~~
