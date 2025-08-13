@@ -1,3 +1,20 @@
+# Описание проекта
+Стек
+- python
+- Django
+- Django Rest Framework
+- Django Channels
+- Celery
+- redis
+- postgresql
+- Docker
+Разработал API для сайта. Сам сайт является web дневником пациента, где пациент может указывать место и степень болевых ощущений. Лечащий врач так же может зарегистрироваться и привязаться к пациенту, внутри дашборда он может отслеживать записи пациента и назначать соответствующее лечение.
+Полностью реализованы: система аутентификации (имеются DRF Token); разделение юзеров на пациентов и врачей через группы; прикрепление врачей к пациентам (отклоненные заявки автоудаляются через celery); система записей болевых ощущений пациента; уведомления (кэширование  через redis); чат на основе Websocket для оперативной связи между пациентом и врачом (Django Channels); для каждого эндпоинта прописаны указания в документации; каждый эндпоинт покрыт тестами. API полностью контейнерезирован через Docker для простоты запуска одной командой в терминале.
+
+Из репозитория полностью убран фронтэнд, так как его писал не я. Ниже я сохранил документацию, написанную для фронтэндера (она изначально была на английском языке, оставил всё как есть).
+
+# Документация
+
 Basic route for api apps is: http://localhost:8000/api/{app_name}/{the rest of the URL} (exception: websocket, I pasted the full route).
 
 
@@ -7,7 +24,7 @@ Basic route for api apps is: http://localhost:8000/api/{app_name}/{the rest of t
 - cd into painway (same level as manage.py)
 - `docker-compose up -d --build` this one will install and run everything you need and then detach from the terminal
 - `chmod +x migrations.sh`
-- `./migrations.sh` - run migrations and autopop BodyParts
+- `./migrations.sh` - run migrations and autopop BodyParts.
 The backend is ready for use.
 
 - when you need to stop it run `docker-compose stop`
